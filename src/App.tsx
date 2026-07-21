@@ -100,6 +100,10 @@ function App() {
           path="/class-wise-list/:year"
           element={<ClassWiseSearchList />}
         />
+         <Route
+          path="/class-wise-list/:year/:classId/:divisionId"
+          element={<ClassWiseSearchList />}
+        />
         <Route
           path="/transport-student-list"
           element={<TransportStudentList />}
@@ -229,6 +233,10 @@ function App() {
         />
         <Route
           path="/miscellaneous-collection"
+          element={<MiscellaneousCollection />}
+        />
+         <Route
+          path="/miscellaneous-collection/:id"
           element={<MiscellaneousCollection />}
         />
         <Route path="/add-pre-registration" element={<PreBooking />} />

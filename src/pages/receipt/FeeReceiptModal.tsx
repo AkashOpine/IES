@@ -17,7 +17,6 @@ import {
 function FeeReceiptModal(props: any) {
   const feesData: any = useSelector((state: any) => state.feeTable);
   const currentYear = localStorage.getItem("year");
-  console.log("uid", props);
   const dispatch = useDispatch();
   const receipt: any = useSelector((state: any) => state.receipt.receiptData);
   // const [receipt, setReceipt] = useState({});
@@ -32,7 +31,7 @@ function FeeReceiptModal(props: any) {
       tryFetchReceiptData({
         academicYear: feesData?.feeData.academic_year || currentYear,
         data: props.slipId,
-      })
+      }),
     );
   }, [feesData?.feeData.academic_year, props.slipId]);
   useEffect(() => {}, [receipt]);
@@ -54,7 +53,7 @@ function FeeReceiptModal(props: any) {
       tryFetchFeeTableData({
         academicYear: params.year || "",
         studentId: feesData.feeData.student_details?.student_id,
-      })
+      }),
     );
   };
   return (
@@ -100,61 +99,76 @@ function FeeReceiptModal(props: any) {
                   </span>
                 </Col>
               </Row>
-              <Row className=" mt-4">
+              <div className="receipt-info gap-4 mt-4 mb-4 d-flex justify-content-between w-100">
                 <Col xs={6}>
-                  <div className="receipt-item receipt-item-right">
-                    <span>Date</span>
-                    <span>{receipt?.date}</span>
-                  </div>{" "}
-                  <div className="receipt-item receipt-item-right">
-                    <span>Name</span>
-                    <span>{receipt?.student_name}</span>
+                  <div className="receipt-row">
+                    <span className="label">Date</span>
+                    <span className="colon">:</span>
+                    <span className="value"> {receipt?.date}</span>
                   </div>
-                  <div className="receipt-item receipt-item-right">
-                    <span>Adm.No</span>
-                    <span>{receipt?.old_admission_no}</span>
+
+                  <div className="receipt-row">
+                    <span className="label">Name</span>
+                    <span className="colon">:</span>
+                    <span className="value"> {receipt?.student_name}</span>
                   </div>
-                  <div className="receipt-item receipt-item-right">
-                    <span>Class</span>
-                    <span>
+                  <div className="receipt-row">
+                    <span className="label">Adm.No</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.old_admission_no}</span>
+                  </div>
+                  <div className="receipt-row">
+                    <span className="label">Class</span>
+                    <span className="colon">:</span>
+                    <span className="value">
                       {" "}
                       {receipt?.class} {receipt?.division}
                     </span>
                   </div>
-                  {receipt.route_name ? (
-                    <div className="receipt-item receipt-item-right">
-                      <span>Bus No</span>
-                      <span>{receipt?.route_name}</span>
+                  {receipt.pickup_name ? (
+                    <div className="receipt-row">
+                      <span className="label">Pick Up</span>
+                      <span className="colon">:</span>
+                      <span className="value">{receipt?.pickup_name}</span>
                     </div>
                   ) : (
                     ""
                   )}
                 </Col>
                 <Col xs={6}>
-                  <div className="receipt-item">
-                    <span>Receipt No</span>
-                    <span>{receipt?.receipt_no}</span>
+                  <div className="receipt-row">
+                    <span className="label">Receipt No</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.receipt_no}</span>
                   </div>
-                  <div className="receipt-item">
-                    <span>Payment Mode</span>
-                    <span>{receipt?.payment_type}</span>
+                  <div className="receipt-row">
+                    <span className="label">Payment Mode</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.payment_type}</span>
                   </div>
-                  <div className="receipt-item">
-                    <span>Concession</span>
-                    <span>{receipt?.concession_type}</span>
+                  <div className="receipt-row">
+                    <span className="label">Concession</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.concession_type}</span>
                   </div>{" "}
                   {/* <div className="receipt-item">
                     <span>Date</span>
                     <span>{receipt?.date}</span>
                   </div>{" "} */}
-                  {receipt.pickup_name ? (
-                    <div className="receipt-item">
-                      <span>Pick Up</span>
-                      <span>{receipt?.pickup_name}</span>
+                  {receipt.route_name ? (
+                    <div className="receipt-row">
+                      <span className="label">Bus No</span>
+                      <span className="colon">:</span>
+                      <span className="value">{receipt?.route_name}</span>
                     </div>
                   ) : (
                     ""
                   )}
+                  <div className="receipt-row">
+                    <span className="label">Remarks</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.remarks}</span>
+                  </div>{" "}
                 </Col>
 
                 {/* <Col xs={12}>
@@ -176,17 +190,7 @@ function FeeReceiptModal(props: any) {
                     ""
                   )}
                 </Col> */}
-                <Col xs={12}>
-                  {receipt.remarks ? (
-                    <div className="remark-container">
-                      <span>Remarks :</span>
-                      <span>{receipt?.remarks}</span>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </Col>
-              </Row>
+              </div>
               <Row>
                 <Col md={12} className="receipt-fee-table">
                   <table className="table table-responsive">

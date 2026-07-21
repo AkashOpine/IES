@@ -246,7 +246,10 @@ function PreRegistrationReport() {
         }
       : "",
   ];
-
+useEffect(() => {
+  console.log("report?.preRegistrationReport",report?.preRegistrationReport);
+  
+}, [report?.preRegistrationReport])
   return (
     <>
       <Row>

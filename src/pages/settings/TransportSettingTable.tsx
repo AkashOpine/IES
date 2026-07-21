@@ -1,8 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Overlay, Popover } from "react-bootstrap";
-import DataTable from "react-data-table-component";
-import { FaEye, FaPencilAlt, FaTrash } from "react-icons/fa";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-enterprise";
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import { apiPost } from "../../config/apiConfig";
@@ -15,11 +18,12 @@ import {
 } from "../../slices/transport/transportSlice";
 function TransportSettingTable() {
   const transportSettingData: any = useSelector(
-    (state: any) => state.transportsetting
+    (state: any) => state.transportsetting,
   );
   const TransportLists: any = useSelector((state: any) => state.transport);
   const dispatch = useDispatch();
   const ref = useRef(null);
+  const gridRef: any = useRef();
   const [editModal, setEditModal]: any = useState(false);
   const [editRowData, setEditRowData]: any = useState(null);
   const [itemId, setItemId] = useState("");
@@ -48,7 +52,7 @@ function TransportSettingTable() {
       bodyFormData.append("Authorization", token);
       bodyFormData.append(
         "id",
-        transportSettingData?.transportSettingTableData?.id
+        transportSettingData?.transportSettingTableData?.id,
       );
       bodyFormData.append("month", id);
 
@@ -58,11 +62,11 @@ function TransportSettingTable() {
         setShow(false);
         dispatch(
           tryFetchTransportSettingTableData(
-            transportSettingData?.transportSettingTableData?.student_id
-          )
+            transportSettingData?.transportSettingTableData?.student_id,
+          ),
         );
-        console.log("resp.response.data",resp.response.data);
-        
+        console.log("resp.response.data", resp.response.data);
+
         toast.error(resp.response.data.status_message);
       } else {
         alert("Something happened please try again");
@@ -77,61 +81,90 @@ function TransportSettingTable() {
       }
     }
   }
-  const columns = [
-    {
-      name: "Month",
-      selector: (row: any) => row.month,
-      sortable: true,
-    },
-    {
-      name: "Ways",
-      selector: (row: any) =>
-        row.transport_type === "1" ? "One-Way" : "Two-way",
-      sortable: true,
-    },
-    {
-      name: "Route",
-      selector: (row: any) => row.route_name,
-      sortable: true,
-    },
-    {
-      name: "Pickup Point",
-      selector: (row: any) => row.pick_up_name,
-      sortable: true,
-    },
-    {
-      name: "Fee",
-      selector: (row: any) => row.fee,
-      sortable: true,
-    },
-    {
-      name: "Tuition Fee",
-      selector: (row: any) => row.akash,
-      sortable: true,
-    },
-    {
-      name: "Action",
-      cell: (row: any) => (
-        <div className="settingsButtonsContainer">
-          <div
-            className="settings-btn editBtn"
-            onClick={() => handleModel(row)}
-          >
-            <FaPencilAlt size={12} />
-          </div>
-          <div
-            className="settings-btn deleteBtn"
-            onClick={(e) => handleDeleteModal(e, row.month_id)}
-          >
-            <FaTrash size={12} />
-          </div>
-          {/* <div className="settings-btn viewBtn">
-            <FaEye size={12} />
-          </div> */}
+
+  // Cell renderer for the sticky Action column
+  const ActionCellRenderer = (params: any) => {
+    const row = params.data;
+    return (
+      <div className="settingsButtonsContainer">
+        <div className="settings-btn editBtn" onClick={() => handleModel(row)}>
+          <FaPencilAlt size={12} />
         </div>
-      ),
+        <div
+          className="settings-btn deleteBtn"
+          onClick={(e) => handleDeleteModal(e, row.month_id)}
+        >
+          <FaTrash size={12} />
+        </div>
+        {/* <div className="settings-btn viewBtn">
+          <FaEye size={12} />
+        </div> */}
+      </div>
+    );
+  };
+
+  const columnDefs: any = [
+    {
+      field: "month",
+      headerName: "Month",
+      sortable: true,
+    },
+    {
+      headerName: "Ways",
+      valueGetter: (params: any) =>
+        params.data.transport_type === "1" ? "One-Way" : "Two-way",
+      sortable: true,
+    },
+    {
+      field: "remark",
+      headerName: "Remarks",
+      sortable: true,
+    },
+    {
+      field: "route_name",
+      headerName: "Route",
+      sortable: true,
+    },
+
+    {
+      field: "pick_up_name",
+      headerName: "Pickup Point",
+      sortable: true,
+    },
+    {
+      field: "fee",
+      headerName: "Fee",
+      sortable: true,
+    },
+    {
+      field: "akash",
+      headerName: "Tuition Fee",
+      sortable: true,
+    },
+
+    {
+      headerName: "Action",
+      field: "action",
+      pinned: "right" as const,
+      lockPinned: true,
+      width: 120,
+      sortable: false,
+      filter: false,
+      resizable: false,
+      suppressMenu: true,
+      cellRenderer: ActionCellRenderer,
     },
   ];
+
+  const defaultColDef = useMemo(
+    () => ({
+      filter: true,
+      resizable: true,
+      sortable: true,
+    }),
+    [],
+  );
+
   useEffect(() => {
     dispatch(tryFetchRouteListData());
   }, []);
@@ -139,10 +172,15 @@ function TransportSettingTable() {
     <>
       <ToastContainer />
       <div className="page-inner-content" ref={ref}>
-        <DataTable
-          columns={columns}
-          data={transportSettingData?.transportSettingTableData?.settings}
-        />
+        <div className="ag-theme-alpine grid-table">
+          <AgGridReact
+            ref={gridRef}
+            rowData={transportSettingData?.transportSettingTableData?.settings}
+            columnDefs={columnDefs}
+            animateRows={true}
+            defaultColDef={defaultColDef}
+          />
+        </div>
 
         <TransportEditModal
           modalOpen={editModal}

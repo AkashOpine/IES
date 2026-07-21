@@ -91,9 +91,11 @@ function FeeTile(props: {
     </Tooltip>
   );
 
+
   useEffect(() => {
     if (props.checkedStatus) {
       setIsChecked(true);
+
       var data = {
         id: `${props.rowName}${props.month}`,
         name: props.rowName,
@@ -102,6 +104,7 @@ function FeeTile(props: {
         isSelected: true,
         monthId: props.monthId,
         fine: props.data.fine,
+        fee_settings_id: props.data.fee_settings_id,
       };
       dispatch(props.handleClick(data));
       dispatch(props.calculateTotal());
@@ -115,6 +118,7 @@ function FeeTile(props: {
         isSelected: false,
         monthId: props.monthId,
         fine: props.data.fine,
+        fee_settings_id: props.data.fee_settings_id,
       };
       dispatch(props.handleClick(data));
       dispatch(props.calculateTotal());

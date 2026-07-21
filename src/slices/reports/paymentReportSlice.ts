@@ -30,6 +30,7 @@ interface InitState {
   consolidatedPaymentHistoryReport: any;
   dailyFeeCollectionReportData: any;
   TermWiseReportData: any;
+  miscFilters: any;
 }
 
 const initState: InitState = {
@@ -64,6 +65,7 @@ const initState: InitState = {
   consolidatedPaymentHistoryReport: null,
   dailyFeeCollectionReportData: [],
   TermWiseReportData: [],
+  miscFilters: null,
 };
 
 const paymentReportSlice = createSlice({
@@ -202,6 +204,9 @@ const paymentReportSlice = createSlice({
       state.isLoading = false;
       state.TermWiseReportData = action.payload.data;
     },
+    setMiscReportFilters: (state, action) => {
+      state.miscFilters = action.payload;
+    },
   },
 });
 
@@ -240,6 +245,7 @@ export const {
   setDailyFeeCollectionReportData,
   tryFetchTermWiseReportData,
   setTermWiseReportData,
+  setMiscReportFilters
 } = paymentReportSlice.actions;
 
 export default paymentReportSlice.reducer;

@@ -124,7 +124,7 @@ export default function SidebarComponent() {
           </SubMenu>
           <div>
             <SubMenu
-              label="Pre-registration "
+              label="Pre-registration"
               className="sidebar-submenu"
               prefix={hostel}
             >
@@ -170,7 +170,7 @@ export default function SidebarComponent() {
                       to="/miscellaneous-collection"
                       onClick={() => {
                         if (location.pathname != "/miscellaneous-collection") {
-                          dispatch(setDefaultFeeHead());
+                          dispatch(setDefaultFeeHead({}));
                         }
                       }}
                     >

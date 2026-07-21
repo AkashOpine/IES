@@ -54,7 +54,6 @@ function HostelFeeTile(props: {
 
   const handleCheck = () => {
     if ((status === "Pending" || status === "Due") && loginTypeId !== "1") {
-      console.log("propsid", props.rowName, props.month);
       setIsChecked(!isChecked);
       var data = {
         id: `${props.rowName}${props.month}`,
@@ -64,6 +63,7 @@ function HostelFeeTile(props: {
         isSelected: !isChecked,
         monthId: props.monthId,
         fine: props.data.fine,
+        fee_settings_id: props.data.fee_settings_id,
       };
       dispatch(props.handleClick(data));
       dispatch(props.calculateTotal());
@@ -101,7 +101,7 @@ function HostelFeeTile(props: {
   const renderTooltip = (
     tool: JSX.IntrinsicAttributes &
       TooltipProps &
-      React.RefAttributes<HTMLDivElement>
+      React.RefAttributes<HTMLDivElement>,
   ) => (
     <Tooltip id="button-tooltip" {...tool}>
       <div className="d-flex justify-content-between gap-5">

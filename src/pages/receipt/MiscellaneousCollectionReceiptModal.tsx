@@ -5,7 +5,7 @@ import { useReactToPrint } from "react-to-print";
 import logo from "../../assets/logo/receipt.png";
 function MiscellaneousCollectionReceiptModal(props: any) {
   const receipt: any = useSelector(
-    (state: any) => state.miscellaneousSetting.receiptData
+    (state: any) => state.miscellaneousSetting.receiptData,
   );
   const componentRef: any = useRef();
   const handlePrint = useReactToPrint({
@@ -62,33 +62,39 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                   </span>
                 </Col>
               </Row>
-              <Row className="mb-4 mt-4">
+              <div className="receipt-info mt-4 mb-4 d-flex justify-content-between w-100">
                 <Col md={6}>
-                  <div className="receipt-item">
-                    <span>Receipt No</span>
-                    <span>{receipt?.receipt_no}</span>
+                  <div className="receipt-row">
+                    <span className="label">Receipt No</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.receipt_no}</span>
                   </div>
-                  <div className="receipt-item">
-                    <span>Date</span>
-                    <span>{receipt?.date}</span>
+                  <div className="receipt-row">
+                    <span className="label">Date</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.date}</span>
                   </div>{" "}
-                  <div className="receipt-item">
-                    <span>Payment Mode</span>
-                    <span>{receipt?.payment_mode}</span>
+                  <div className="receipt-row">
+                    <span className="label">Payment Mode</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.payment_mode}</span>
                   </div>{" "}
                 </Col>
                 <Col md={6}>
-                  <div className="receipt-item">
-                    <span>Student Name</span>
-                    <span>{receipt?.student_name}</span>
+                  <div className="receipt-row">
+                    <span className="label">Student Name</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.student_name}</span>
                   </div>
-                  <div className="receipt-item">
-                    <span>Admission Number</span>
-                    <span>{receipt?.adm_no}</span>
+                  <div className="receipt-row">
+                    <span className="label">Admission Number</span>
+                    <span className="colon">:</span>
+                    <span className="value">{receipt?.adm_no}</span>
                   </div>
-                  <div className="receipt-item">
-                    <span>Class</span>
-                    <span>
+                  <div className="receipt-row">
+                    <span className="label">Class</span>
+                    <span className="colon">:</span>
+                    <span className="value">
                       {" "}
                       {receipt?.class_name} {receipt?.divison_name}
                     </span>
@@ -142,7 +148,7 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                     </tbody>
                   </table>
                 </Col> */}
-              </Row>
+              </div>
               <Row>
                 <Col md={12} className="receipt-fee-table">
                   <table className="table table-responsive">
@@ -172,9 +178,14 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                 </Col>
               </Row>
               <Row>
-                <Col md={12} className="remark-container">
-                  <div className="title">Remarks</div>
-                  <div className="content">{receipt?.remarks}</div>
+                <Col md={12} className="">
+                  <div className="mb-3 extra-charge">
+                    <div className="d-flex gap-2 extra-charge-item">
+                      <span className="bold">Remarks</span>
+                      <span className="bold">:</span>
+                      <span>{receipt?.remarks}</span>
+                    </div>
+                  </div>
                 </Col>
               </Row>
               <Row>

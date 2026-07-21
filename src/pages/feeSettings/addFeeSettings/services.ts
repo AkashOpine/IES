@@ -8,6 +8,7 @@ import {
   FEE_HEAD_LIST,
   FEE_SETTINGS_LIST,
   FEE_STATUS,
+  MISCELLANEOUS_SETTING_LIST,
   SUB_DIV_LIST,
 } from "../../../config/BaseUrl";
 
@@ -165,6 +166,26 @@ export const deleteFeeSettingsApi = async (
     bodyFormData.append("fee_settings_id", Id);
 
     const resp: any = await apiPost(DELETE_FEE_SETTINGS, bodyFormData);
+
+    if (resp?.response?.data?.status === 200) {
+      return resp.response.data.data;
+    }
+
+    return [];
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.message);
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+export const getMissFeeListApi = async () => {
+  try {
+    const bodyFormData = new FormData();
+    bodyFormData.append("Authorization", token);
+
+    const resp: any = await apiPost(MISCELLANEOUS_SETTING_LIST, bodyFormData);
 
     if (resp?.response?.data?.status === 200) {
       return resp.response.data.data;

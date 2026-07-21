@@ -13,6 +13,7 @@ import miscellaneousReducer from "./settings/miscellaneousSettingSlice";
 import hostelReducer from "./hostel/hostelSlice";
 import preRegistrationSlice from "./preRegistration/preRegistrationSlice";
 import dcbReportReducer from "./dcbReports/dcbReportSlice";
+import classWiseReducer from "./classWiseSlice/classWiseSlice";
 const combinedReducer = combineReducers({
   auth: authReducer,
   feeTable: feesReducer,
@@ -28,6 +29,8 @@ const combinedReducer = combineReducers({
   hostel: hostelReducer,
   PreRegistration: preRegistrationSlice,
   dcbReport: dcbReportReducer,
+  classWise: classWiseReducer,
+
 });
 
 const rootReducer = (state: any, action: any) => {

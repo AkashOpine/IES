@@ -50,6 +50,7 @@ function BusFeeTile(props: {
       check = "unchecked";
       break;
   }
+ 
 
   const handleCheck = () => {
     if ((status === "Pending" || status === "Due") && loginTypeId !== "1") {
@@ -63,9 +64,10 @@ function BusFeeTile(props: {
         isSelected: !isChecked,
         monthId: props.monthId,
         fine: props.data.fine,
+        fee_settings_id: props.data.fee_settings_id,
       };
-      console.log("props.amount_to_be_paid",props.amount_to_be_paid);
-      
+      console.log("props.amount_to_be_paid", props.amount_to_be_paid);
+
       dispatch(props.handleClick(data));
       dispatch(props.calculateTotal());
     }
@@ -101,7 +103,7 @@ function BusFeeTile(props: {
   const renderTooltip = (
     tool: JSX.IntrinsicAttributes &
       TooltipProps &
-      React.RefAttributes<HTMLDivElement>
+      React.RefAttributes<HTMLDivElement>,
   ) => (
     <Tooltip id="button-tooltip" {...tool}>
       <div className="d-flex justify-content-between gap-5">

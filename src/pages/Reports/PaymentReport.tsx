@@ -20,10 +20,7 @@ function PaymentReport() {
   const paymentReport: any = useSelector((state: any) => state.paymentreport);
   const gridRef: any = useRef();
   useEffect(() => {
-    console.log(
-      "paymentReport",
-      paymentReport.paymentReportData
-    );
+    console.log("paymentReport", paymentReport.paymentReportData);
   }, [paymentReport]);
 
   const createData = (count: any) => {
@@ -32,6 +29,12 @@ function PaymentReport() {
       result.push({
         Name: paymentReport.paymentReportData?.grand_total ? "Total" : "",
         "Bus Fee": paymentReport.paymentReportData?.grand_total?.["Bus Fee"],
+         "AdvFeeTot": paymentReport.paymentReportData?.grand_total?.["AdvFeeTot"],
+        "Arts Day & Other Celebrations":
+          paymentReport.paymentReportData?.grand_total?.[
+            "Arts Day & Other Celebrations"
+          ],
+
         "Other Annual/Monthly Charges":
           paymentReport.paymentReportData?.grand_total?.[
             "Other Annual/Monthly Charges"
@@ -76,13 +79,21 @@ function PaymentReport() {
     }
     return result;
   };
+
+  useEffect(() => {
+    console.log(
+      "paymentReport.paymentReportData",
+      paymentReport.paymentReportData,
+    );
+  }, [paymentReport.paymentReportData]);
+
   const defaultColDef = useMemo(
     () => ({
       filter: true,
       resizable: true,
       sortable: true,
     }),
-    []
+    [],
   );
   const sideBar: any = {
     toolPanels: [
@@ -137,7 +148,7 @@ function PaymentReport() {
     (params: any) => {
       return paymentReport.paymentReportData?.Details;
     },
-    [paymentReport.paymentReportData?.Details]
+    [paymentReport.paymentReportData?.Details],
   );
   // const onBtExport = useCallback(() => {
   //   if (paymentReport.paymentReportData?.Details.length > 0) {
@@ -176,7 +187,7 @@ function PaymentReport() {
                   (heading: string, index: number) => ({
                     headerName: heading,
                     field: paymentReport.paymentReportData?.head[index],
-                  })
+                  }),
                 )}
                 animateRows={true}
                 rowSelection="multiple"

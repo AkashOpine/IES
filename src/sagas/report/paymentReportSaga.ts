@@ -414,7 +414,7 @@ function* fetchMiscellaneousReportData(data: any): any {
     var token = localStorage.getItem("token") as string;
     var bodyFormData = new FormData();
     bodyFormData.append("Authorization", token);
-    bodyFormData.append("from_date", data.payload.paymentMode);
+    bodyFormData.append("payment_mode", data.payload.paymentMode);
     bodyFormData.append("from_date", data.payload.fromDate);
     bodyFormData.append("to_date", data.payload.toDate);
     bodyFormData.append("fee_head", data.payload.feeHeads);

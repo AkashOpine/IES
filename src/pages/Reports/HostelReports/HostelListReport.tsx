@@ -50,8 +50,8 @@ function HostelListReport() {
       headerName: "Admission Fee",
     },
     {
-      field: "store_deposit",
-      headerName: "Store Deposit",
+      field: "readmission",
+      headerName: "Readmission Fee",
     },
     {
       field: "caution_deposit",

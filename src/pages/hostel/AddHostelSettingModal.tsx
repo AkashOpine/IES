@@ -50,6 +50,7 @@ function AddHostelSettingModal(props: any) {
     roomType: "",
     roomNumber: "",
     month: "",
+    remarks: "",
   });
   const [hostelDetails, setHostelDetails] = useState({
     hostelSettingId: "",
@@ -58,6 +59,7 @@ function AddHostelSettingModal(props: any) {
     cautionDeposit: "",
     storeDeposit: "",
     establishmentFee: "",
+    readmission: "",
   });
 
   const [monthDetails, setMonthDetails] = useState([
@@ -147,7 +149,7 @@ function AddHostelSettingModal(props: any) {
       feeInput: "",
     },
   ]);
-   const isSeniorClass =
+  const isSeniorClass =
     studentDetails?.class_id === "XI" || studentDetails?.class_id === "XII";
 
   const filteredMonthDetails = isSeniorClass
@@ -202,7 +204,7 @@ function AddHostelSettingModal(props: any) {
       );
     });
   };
-  
+
   // useEffect(() => {
   //   monthDetails?.map((month) => {
   //     setMonthValues((prevSelectedMonths) => {
@@ -299,11 +301,20 @@ function AddHostelSettingModal(props: any) {
       bodyFormData.append("hostel_type", formData.hostelType);
       bodyFormData.append("room_type", formData.roomType);
       bodyFormData.append("room_no", formData.roomNumber);
-      bodyFormData.append("hostel_fee", hostelDetails.hostelFee);
-      bodyFormData.append("admission_fee", hostelDetails.admissionFee);
-      bodyFormData.append("caution_deposit", hostelDetails.cautionDeposit);
-      bodyFormData.append("store_deposit", hostelDetails.storeDeposit);
-      bodyFormData.append("establishment_fee", hostelDetails.establishmentFee);
+      bodyFormData.append("hostel_fee", hostelDetails.hostelFee || "");
+      bodyFormData.append("admission_fee", hostelDetails.admissionFee || "");
+      bodyFormData.append(
+        "caution_deposit",
+        hostelDetails.cautionDeposit || "",
+      );
+      bodyFormData.append("readmission", hostelDetails.readmission || "");
+      bodyFormData.append("store_deposit", hostelDetails.storeDeposit || "");
+      bodyFormData.append(
+        "establishment_fee",
+        hostelDetails.establishmentFee || "",
+      );
+      bodyFormData.append("remark", formData.remarks || "");
+
       bodyFormData.append("discontinue_flag", "0");
       console.log("hostel setting fee datas is ", formData);
       let resp: any = await apiPost(ADD_STUDENT_HOSTEL_SETTING, bodyFormData);
@@ -352,22 +363,19 @@ function AddHostelSettingModal(props: any) {
 
     dispatch(clearSearch());
   };
-useEffect(() => {
- if (search === "") {
+  useEffect(() => {
+    if (search === "") {
       setStudentDetails({});
     }
-}, [search])
-
- 
+  }, [search]);
 
   useEffect(() => {
     getAcademicYear();
     dispatch(tryFetchHostelRequiredList());
     return () => {
-      dispatch(clearSearch())
-        setSearch("");
-        setStudentDetails({});
-
+      dispatch(clearSearch());
+      setSearch("");
+      setStudentDetails({});
     };
   }, []);
 
@@ -384,6 +392,7 @@ useEffect(() => {
       roomType: "",
       roomNumber: "",
       month: "",
+      remarks: "",
     });
     setSearch("");
     setHostelDetails({
@@ -393,8 +402,9 @@ useEffect(() => {
       cautionDeposit: "",
       storeDeposit: "",
       establishmentFee: "",
+      readmission: "",
     });
-     setStudentDetails({});
+    setStudentDetails({});
     // setSelectedMonth([]);
     dispatch(clearSearch());
     props.setOpen(false);
@@ -439,16 +449,20 @@ useEffect(() => {
       cautionDeposit: hostelList.hostelDetails?.[0]?.caution_deposit,
       storeDeposit: hostelList.hostelDetails?.[0]?.store_deposit,
       establishmentFee: hostelList.hostelDetails?.[0]?.establishment_fee,
+      readmission: hostelList.hostelDetails?.[0]?.readmission,
     });
   }, [hostelList.hostelDetails]);
   useEffect(() => {
+    console.log("thidsdsdddddddddddddddddddd");
+
     setMonthDetails((prevMonthDetails) => {
       const updatedMonthDetails = prevMonthDetails?.map((month) => {
         return { ...month, feeInput: hostelDetails?.hostelFee };
       });
       return updatedMonthDetails;
     });
-  }, [hostelDetails]);
+  }, [hostelDetails?.hostelFee]);
+
   useEffect(() => {
     if (formData.academic_year !== "") {
       setAcademicYearError(false);
@@ -716,6 +730,21 @@ useEffect(() => {
                   </Row>
                   <Row className="form-inputs-row">
                     <Col md={6}>
+                      <label htmlFor="">Readmission Fee</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        placeholder="Readmission Fee"
+                        onChange={(e: any) =>
+                          setHostelDetails({
+                            ...hostelDetails,
+                            readmission: e.target.value,
+                          })
+                        }
+                        value={hostelDetails.readmission}
+                      />
+                    </Col>
+                    {/* <Col md={6}>
                       <label htmlFor="">Store Deposit</label>
                       <input
                         type="text"
@@ -734,7 +763,7 @@ useEffect(() => {
                         }
                         disabled
                       />
-                    </Col>
+                    </Col> */}
                     <Col md={6}>
                       <label htmlFor="">Establishment Fee</label>
                       <input
@@ -753,6 +782,26 @@ useEffect(() => {
                             : hostelDetails.establishmentFee
                         }
                         disabled
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="form-inputs-row">
+                    <Col md={12}>
+                      <label htmlFor="remarks" className="mb-2">
+                        Remarks
+                      </label>
+                      <textarea
+                        id="remarks"
+                        className="form-text-area"
+                        placeholder="Remarks"
+                        value={formData.remarks}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            remarks: e.target.value,
+                          })
+                        }
+                        rows={5}
                       />
                     </Col>
                   </Row>

@@ -126,6 +126,7 @@ const feeSlice = createSlice({
           amount: action.payload.amount,
           monthId: action.payload.monthId,
           fine: action.payload.fine,
+          fee_settings_id: action.payload.fee_settings_id,
         };
         var index = oldData.findIndex((x) => x.id === action.payload.id);
         if (index === -1 && action.payload.isSelected) {
@@ -156,6 +157,7 @@ const feeSlice = createSlice({
           amount: action.payload.amount,
           monthId: action.payload.monthId,
           fine: action.payload.fine,
+          fee_settings_id: action.payload.fee_settings_id,
         };
         var index = oldData.findIndex((x) => x.id === action.payload.id);
         if (index === -1 && action.payload.isSelected) {
@@ -185,6 +187,7 @@ const feeSlice = createSlice({
           amount: action.payload.amount,
           monthId: action.payload.monthId,
           fine: action.payload.fine,
+          fee_settings_id: action.payload.fee_settings_id,
         };
         var index = oldData.findIndex((x) => x.id === action.payload.id);
         if (index === -1 && action.payload.isSelected) {
@@ -214,6 +217,7 @@ const feeSlice = createSlice({
           amount: action.payload.amount,
           monthId: action.payload.monthId,
           fine: action.payload.fine,
+          fee_settings_id: action.payload.fee_settings_id,
         };
         var index = oldData.findIndex((x) => x.id === action.payload.id);
         if (index === -1 && action.payload.isSelected) {
@@ -243,6 +247,7 @@ const feeSlice = createSlice({
           amount: action.payload.amount,
           monthId: action.payload.monthId,
           fine: action.payload.fine,
+          fee_settings_id: action.payload.fee_settings_id,
         };
         var index = oldData.findIndex((x) => x.id === action.payload.id);
         if (index === -1 && action.payload.isSelected) {
@@ -272,6 +277,7 @@ const feeSlice = createSlice({
           amount: action.payload.amount,
           monthId: action.payload.monthId,
           fine: action.payload.fine,
+          fee_settings_id: action.payload.fee_settings_id,
         };
         var index = oldData.findIndex((x) => x.id === action.payload.id);
         if (index === -1 && action.payload.isSelected) {
@@ -350,11 +356,13 @@ const feeSlice = createSlice({
       let totalSum = 0;
       let totalFine = 0;
       var oldData = [...state.busFee];
+
       var tableData = {
         id: action.payload.id,
         amount: action.payload.amount,
         monthId: action.payload.monthId,
         fine: action.payload.fine,
+        fee_settings_id: action.payload.fee_settings_id,
       };
       var index = oldData.findIndex((x) => x.id === action.payload.id);
       if (index === -1 && action.payload.isSelected) {
@@ -418,6 +426,7 @@ const feeSlice = createSlice({
         amount: action.payload.amount,
         monthId: action.payload.monthId,
         fine: action.payload.fine,
+        fee_settings_id: action.payload.fee_settings_id,
       };
       var index = oldData.findIndex((x) => x.id === action.payload.id);
       if (index === -1 && action.payload.isSelected) {
@@ -624,7 +633,7 @@ export const academicArray = createSelector(
       }
     });
     return finalArray;
-  }
+  },
 );
 export const busFeeArray = createSelector(
   (state: any) => state,
@@ -635,7 +644,7 @@ export const busFeeArray = createSelector(
     finalArray = array1.map((item: any) => item.monthId);
 
     return finalArray;
-  }
+  },
 );
 export const diaryFeeArray = createSelector(
   (state: any) => state,
@@ -646,7 +655,7 @@ export const diaryFeeArray = createSelector(
     finalArray = array1.map((item: any) => item.monthId);
 
     return finalArray;
-  }
+  },
 );
 export const hostelFeeArray = createSelector(
   (state: any) => state,
@@ -657,7 +666,7 @@ export const hostelFeeArray = createSelector(
     finalArray = array1.map((item: any) => item.monthId);
 
     return finalArray;
-  }
+  },
 );
 export const admissionFeeArray = createSelector(
   (state: any) => state,
@@ -668,7 +677,7 @@ export const admissionFeeArray = createSelector(
     finalArray = array1.map((item: any) => item.monthId);
 
     return finalArray;
-  }
+  },
 );
 export const cautionDepositArray = createSelector(
   (state: any) => state,
@@ -679,7 +688,18 @@ export const cautionDepositArray = createSelector(
     finalArray = array1.map((item: any) => item.monthId);
 
     return finalArray;
-  }
+  },
+);
+export const readmissionArray = createSelector(
+  (state: any) => state,
+  (fees: any) => {
+    let finalArray: any[] = [];
+    var array1 = fees.feeTable.cautionDepositRaw;
+
+    finalArray = array1.map((item: any) => item.monthId);
+
+    return finalArray;
+  },
 );
 export const {
   tryFetchFeeTableData,

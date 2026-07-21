@@ -1,5 +1,5 @@
-// let baseUrl = "https://www.educationerp.in/IES/index.php/m_api/";
-let baseUrl = "https://www.educationerp.in/TEST/index.php/m_api/";
+let baseUrl = "https://www.educationerp.in/IES/index.php/m_api/";
+// let baseUrl = "https://www.educationerp.in/TEST/index.php/m_api/";
 // let baseUrl = "https://www.educationerp.in/MSV/index.php/m_api/";
 
 // let baseUrl = "https://educationerp.in/bvbponnani/index.php/m_api/";
@@ -81,6 +81,12 @@ export const EDIT_MISCELLANEOUS_SETTING =
   baseUrl + "fee_c/update_miss_feesettings";
 export const GENERATE_MISCELLANEOUS_COLLECTION_RECEIPT =
   baseUrl + "fee_c/mis_receipt_details";
+export const MISCELLANEOUS_COLLECTION_DETAILS_BY_ID =
+  baseUrl + "fee_c/miss_fee_details";
+export const DELETE_MISCELLANEOUS_COLLECTION =
+  baseUrl + "fee_c/delete_mis_fee_collection";
+export const UPDATE_MISCELLANEOUS_COLLECTION =
+  baseUrl + "fee_c/update_miss_feecollection";
 export const TRANSPORT_FUEL_FILLING_REPORT =
   baseUrl + "transport_c/vehicle_fuel_filling_report";
 export const TRANSPORT_MAINTANENCE_REPORT =
@@ -203,3 +209,8 @@ export const HOSTEL_CONSOLIDATED_DCB =
   baseUrl + "reports_c/termwise_hostel_fee_dcb";
 
 export const HOSTEL_FEE_TYPES = baseUrl + "reports_c/getHotelFeeHeads";
+
+export const PRINT_DUE_CLEARANCE_FORM = baseUrl + "fee_c/due_certificate";
+
+
+export const PAY_FEES_PARTIAL = baseUrl + "fee_c/save_feecollection_new";

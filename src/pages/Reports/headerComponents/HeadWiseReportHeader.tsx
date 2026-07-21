@@ -8,12 +8,13 @@ import { FaChevronRight } from "react-icons/fa";
 import Moment from "moment";
 import { useDispatch } from "react-redux";
 import {
+  setMiscReportFilters,
   tryFetchHeadWiseReportData,
   tryFetchMiscellaneousReportData,
   tryFetchPaymentModeReportData,
 } from "../../../slices/reports/paymentReportSlice";
 import { useLocation } from "react-router-dom";
-import { getFeeHeadListApi } from "../../feeSettings/addFeeSettings/services";
+import { getFeeHeadListApi, getMissFeeListApi } from "../../feeSettings/addFeeSettings/services";
 function HeadWiseReportHeader() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -25,12 +26,17 @@ function HeadWiseReportHeader() {
   const [feeHeadData, setFeeHeadData] = useState("");
 
   useEffect(() => {
-    getFeeHeadListApi().then(setFeeHeadList).catch(console.error);
+    getMissFeeListApi().then(setFeeHeadList).catch(console.error);
   }, []);
+  useEffect(() => {
+    console.log("feeHeadList",feeHeadList);
+    
+  }, [feeHeadList])
+  
   const feeHeadOptions: any = feeHeadList.map((items: any) => {
     return {
-      value: items.feehead_id,
-      label: items.feehead_name,
+      value: items.id,
+      label: items.fee_head_name,
     };
   });
   const customStyles = {
@@ -91,6 +97,7 @@ function HeadWiseReportHeader() {
       feeHeads: feeHeadData,
     };
     if (location.pathname === "/miscellaneous-report") {
+      dispatch(setMiscReportFilters(data));
       dispatch(tryFetchMiscellaneousReportData(data));
     } else {
       dispatch(tryFetchHeadWiseReportData(data));

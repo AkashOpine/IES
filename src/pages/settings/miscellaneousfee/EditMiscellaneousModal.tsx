@@ -49,8 +49,14 @@ function EditMiscellaneousModal(props: any) {
                 </Row>
                 <Row className="form-inputs-row">
                   <Col md={8} className="m-auto">
-                    <input
-                      type="text"
+                    <textarea
+                    style={{
+                      height: "auto",
+                      paddingTop: "10px",
+                      overflowWrap: "break-word",
+                      wordBreak: "break-word",
+                    }}
+                    rows={5}
                       name="remarks"
                       className="form-input"
                       placeholder="Remarks"

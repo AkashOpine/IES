@@ -37,6 +37,7 @@ function EditHostelSettingModal(props: any) {
     roomType: "",
     roomNumber: "",
     month: "",
+    remarks: "",
   });
   const [hostelDetails, setHostelDetails] = useState({
     hostelSettingId: "",
@@ -45,6 +46,7 @@ function EditHostelSettingModal(props: any) {
     cautionDeposit: "",
     storeDeposit: "",
     establishmentFee: "",
+    readmission: "",
   });
   const [monthDetails, setMonthDetails] = useState([
     {
@@ -213,11 +215,19 @@ function EditHostelSettingModal(props: any) {
       bodyFormData.append("hostel_type", formData.hostelType);
       bodyFormData.append("room_type", formData.roomType);
       bodyFormData.append("room_no", formData.roomNumber);
-      bodyFormData.append("hostel_fee", hostelDetails.hostelFee);
-      bodyFormData.append("admission_fee", hostelDetails.admissionFee);
-      bodyFormData.append("caution_deposit", hostelDetails.cautionDeposit);
-      bodyFormData.append("store_deposit", hostelDetails.storeDeposit);
-      bodyFormData.append("establishment_fee", hostelDetails.establishmentFee);
+      bodyFormData.append("hostel_fee", hostelDetails.hostelFee || "");
+      bodyFormData.append("admission_fee", hostelDetails.admissionFee || "");
+      bodyFormData.append("readmission", hostelDetails.readmission || "");
+      bodyFormData.append("remark", formData.remarks || "");
+      bodyFormData.append(
+        "caution_deposit",
+        hostelDetails.cautionDeposit || "",
+      );
+      bodyFormData.append("store_deposit", hostelDetails.storeDeposit || "");
+      bodyFormData.append(
+        "establishment_fee",
+        hostelDetails.establishmentFee || "",
+      );
       bodyFormData.append("discontinue_flag", "0");
       console.log("hostel setting fee datas is ", formData);
       let resp: any = await apiPost(EDIT_STUDENT_HOSTEL_SETTING, bodyFormData);
@@ -278,6 +288,7 @@ function EditHostelSettingModal(props: any) {
       roomType: "",
       roomNumber: "",
       month: "",
+      remarks: "",
     });
     setSearch("");
     setHostelDetails({
@@ -287,6 +298,7 @@ function EditHostelSettingModal(props: any) {
       cautionDeposit: "",
       storeDeposit: "",
       establishmentFee: "",
+      readmission: "",
     });
     dispatch(clearSearch());
     setMonthDetails((prevMonthDetails: any) => {
@@ -341,6 +353,7 @@ function EditHostelSettingModal(props: any) {
       cautionDeposit: hostelList.singleHostelerDetails?.caution_deposit,
       storeDeposit: hostelList.singleHostelerDetails?.store_deposit,
       establishmentFee: hostelList.singleHostelerDetails?.establishment_fee,
+      readmission: hostelList.singleHostelerDetails?.readmission,
     });
     setFormData({
       ...formData,
@@ -351,6 +364,7 @@ function EditHostelSettingModal(props: any) {
       roomType: hostelList.singleHostelerDetails?.room_type_id,
       roomNumber: parseInt(hostelList.singleHostelerDetails?.room_no),
       month: "",
+      remarks: hostelList.singleHostelerDetails?.remark,
     });
     console.log(
       "hostelList.singleHostelerDetails",
@@ -382,6 +396,7 @@ function EditHostelSettingModal(props: any) {
       // cautionDeposit: hostelList.hostelDetails?.[0]?.caution_deposit,
       storeDeposit: hostelList.hostelDetails?.[0]?.store_deposit,
       establishmentFee: hostelList.hostelDetails?.[0]?.establishment_fee,
+      readmission: hostelList.hostelDetails?.[0]?.readmission,
     });
   }, [hostelList.hostelDetails]);
   useEffect(() => {
@@ -418,7 +433,6 @@ function EditHostelSettingModal(props: any) {
     formData.roomNumber,
     formData.roomType,
   ]);
- 
 
   return (
     <>
@@ -583,6 +597,21 @@ function EditHostelSettingModal(props: any) {
                   </Row>
                   <Row className="form-inputs-row">
                     <Col md={6}>
+                      <label htmlFor="">Readmission Fee</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        placeholder="Readmission Fee"
+                        onChange={(e: any) =>
+                          setHostelDetails({
+                            ...hostelDetails,
+                            readmission: e.target.value || 0,
+                          })
+                        }
+                        value={hostelDetails.readmission}
+                      />
+                    </Col>
+                    {/* <Col md={6}>
                       <label htmlFor="">Store Deposit</label>
                       <input
                         type="text"
@@ -595,7 +624,7 @@ function EditHostelSettingModal(props: any) {
                         }
                         disabled
                       />
-                    </Col>
+                    </Col> */}
                     <Col md={6}>
                       <label htmlFor="">Establishment Fee</label>
                       <input
@@ -611,6 +640,27 @@ function EditHostelSettingModal(props: any) {
                       />
                     </Col>
                   </Row>
+                  <Row className="form-inputs-row">
+                    <Col md={12}>
+                      <label htmlFor="remarks" className="mb-2">
+                        Remarks
+                      </label>
+                      <textarea
+                        id="remarks"
+                        className="form-text-area"
+                        placeholder="Remarks"
+                        value={formData.remarks}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            remarks: e.target.value,
+                          })
+                        }
+                        rows={5}
+                      />
+                    </Col>
+                  </Row>
+
                   <Row className="form-inputs-row">
                     <Col md={12} className="d-flex flex-wrap  gap-5">
                       {filteredMonthDetails?.map((months, index) => {

@@ -5,7 +5,6 @@ import { FaDownload } from "react-icons/fa";
 import { onBtExport } from "../../headerComponents/ExportExcel";
 import PaymentReportHeader from "../../headerComponents/PaymentReportHeader";
 import { useSelector } from "react-redux";
-import AcademicDcbReportHeader from "../../headerComponents/AcademicDcbReportHeader";
 import TransportDcbReportHeader from "../../headerComponents/TransportDcbReportHeader";
 import { log } from "console";
 function TransportDetailedDCB() {

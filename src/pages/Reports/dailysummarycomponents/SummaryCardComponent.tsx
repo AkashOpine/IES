@@ -91,23 +91,26 @@ function SummaryCardComponent() {
                         </span>
                       </div>
                       <div className="field">
-                        <span className="label">Total Collection</span>
+                        <span className="label">Adv Fee</span>
                         <span className="text">
-                          {paymentReport?.dailySummaryReportData.total_paid_amt}
+                          {paymentReport?.dailySummaryReportData?.["Adv.Fee"]}
                         </span>
                       </div>
+                    
                       <div className="field">
                         <span className="label">Fine</span>
                         <span className="text">
                           {paymentReport?.dailySummaryReportData.fine}
                         </span>
+                        
                       </div>
-                      <div className="field">
-                        <span className="label">Cheque</span>
+                        <div className="field">
+                        <span className="label">Total Collection</span>
                         <span className="text">
-                          {paymentReport?.dailySummaryReportData.cheque}
+                          {paymentReport?.dailySummaryReportData.total_paid_amt}
                         </span>
                       </div>
+                      
                       <div className="field">
                         <span className="label">Previous Pending Fee</span>
                         <span className="text">
@@ -115,6 +118,12 @@ function SummaryCardComponent() {
                             paymentReport?.dailySummaryReportData
                               .previous_pending_fee
                           }
+                        </span>
+                      </div>
+                      <div className="field">
+                        <span className="label">Cheque</span>
+                        <span className="text">
+                          {paymentReport?.dailySummaryReportData.cheque}
                         </span>
                       </div>
                       <div className="field">

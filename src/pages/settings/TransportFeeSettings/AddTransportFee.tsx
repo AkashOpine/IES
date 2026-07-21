@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Col, Modal, Row } from "react-bootstrap";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,6 +42,7 @@ function AddTransportFeeModal(props: any) {
     month: "",
     fee: 0,
     tuition: "",
+    remarks: "",
   });
   const [studentDetails, setStudentDetails] = useState({
     name: "",
@@ -124,18 +125,33 @@ function AddTransportFeeModal(props: any) {
   const isSeniorClass =
     studentDetails?.class === "XI" || studentDetails?.class === "XII";
 
-  const filteredMonthDetails = isSeniorClass
-    ? monthDetails // show everything
-    : monthDetails.filter((m) => m.month_id !== 13 && m.month_id !== 14);
+  const filteredMonthDetails = useMemo(
+    () =>
+      isSeniorClass
+        ? monthDetails
+        : monthDetails.filter((m) => m.month_id !== 13 && m.month_id !== 14),
+    [isSeniorClass, monthDetails],
+  );
 
-  const [selectedMonth, setSelectedMonth] = useState<number[]>([]);
-  useEffect(() => {
-    const months = filteredMonthDetails
+  // ✅ Lazy initializer sets checked months once on mount
+  const [selectedMonth, setSelectedMonth] = useState<number[]>(() =>
+    filteredMonthDetails
       .filter((month) => month.isCheckBox)
-      .map((month) => month.month_id);
+      .map((month) => month.month_id),
+  );
 
-    setSelectedMonth(months);
-  }, [filteredMonthDetails]);
+  // ✅ Only reset selection if the class tier changes (XI/XII vs lower)
+  const prevIsSeniorClass = useRef(isSeniorClass);
+  useEffect(() => {
+    if (prevIsSeniorClass.current !== isSeniorClass) {
+      prevIsSeniorClass.current = isSeniorClass;
+      setSelectedMonth(
+        filteredMonthDetails
+          .filter((month) => month.isCheckBox)
+          .map((month) => month.month_id),
+      );
+    }
+  }, [isSeniorClass, filteredMonthDetails]);
 
   useEffect(() => {
     console.log("selectedMonth", selectedMonth);
@@ -143,21 +159,15 @@ function AddTransportFeeModal(props: any) {
 
   const monthsSelected = selectedMonth.toString();
 
-  const handleCheckBox = (event: any) => {
-    const monthValue = event.target.value;
+  const handleCheckBox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const monthValue = parseInt(event.target.value);
     const isChecked = event.target.checked;
-    if (isChecked) {
-      setSelectedMonth((prevSelectedMonth: any) => [
-        ...prevSelectedMonth,
-        parseInt(monthValue),
-      ]);
-    } else {
-      setSelectedMonth((prevSelectedMonth: any) =>
-        prevSelectedMonth.filter(
-          (month: any) => month !== parseInt(monthValue),
-        ),
-      );
-    }
+
+    setSelectedMonth((prev) =>
+      isChecked
+        ? Array.from(new Set([...prev, monthValue]))
+        : prev.filter((month) => month !== monthValue),
+    );
   };
   // const fee = () => {
   //   var value: any = formData.fee;
@@ -244,6 +254,7 @@ function AddTransportFeeModal(props: any) {
 
       bodyFormData.append("transport_type", transportTypeRadio);
       bodyFormData.append("tuition", formData.tuition);
+      bodyFormData.append("remark", formData.remarks);
 
       let resp: any = await apiPost(ADD_TRANSPORT_INDIVIDUAL_FEE, bodyFormData);
       if (resp.response.data.status === 200 && resp.response.data.data) {
@@ -337,6 +348,7 @@ function AddTransportFeeModal(props: any) {
       month: "",
       fee: 0,
       tuition: "",
+      remarks: "",
     });
     setSearch("");
     setStudentDetails({
@@ -594,6 +606,26 @@ function AddTransportFeeModal(props: any) {
                       />
                     </Col>
                   </Row>
+                  <Row className="form-inputs-row">
+                    <Col md={12}>
+                      <label htmlFor="remarks" className="mb-2">
+                        Remarks
+                      </label>
+                      <textarea
+                        id="remarks"
+                        className="form-text-area"
+                        placeholder="Remarks"
+                        value={formData.remarks}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            remarks: e.target.value,
+                          })
+                        }
+                        rows={5}
+                      />
+                    </Col>
+                  </Row>
                   {feeStructureRadio === 2 ? (
                     <Row className="form-inputs-row">
                       <Col md={12} className="d-flex gap-5 flex-wrap">
@@ -610,10 +642,11 @@ function AddTransportFeeModal(props: any) {
                                 type="checkbox"
                                 value={months.month_id}
                                 name={months.month}
-                                
-                                defaultChecked
+                                checked={selectedMonth.includes(
+                                  months.month_id,
+                                )}
                                 className="form-check-input"
-                                onChange={(e) => handleCheckBox(e)}
+                                onChange={handleCheckBox}
                               />
                             </div>
                           );

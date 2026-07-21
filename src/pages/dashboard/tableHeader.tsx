@@ -267,23 +267,6 @@ function TableHeader() {
               {feesData.feeData?.display_message}
             </span>
             <div className="privilage">
-              <span
-                className=" student-detail-font "
-                style={{
-                  color: "yellow",
-                  fontWeight: "bold",
-                  WebkitTextStroke: "0.05px black",
-                  textShadow:
-                    "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000",
-                }}
-              >
-                {feesData.feeData.student_details?.student_status?.replace(
-                  /\s+/g,
-                  "",
-                ) === "Suspended"
-                  ? "Inactive"
-                  : ""}
-              </span>
               <span className="student-privilage">
                 {feesData.feeData.student_details?.concession_type
                   ? feesData.feeData.student_details?.concession_type
@@ -299,6 +282,49 @@ function TableHeader() {
             >
               <span>Concession</span>
             </button>
+          </div>
+          <div>
+           
+            <span
+              className="student-detail-font"
+              style={{
+                display: "inline-block",
+                backgroundColor:
+                  feesData.feeData.student_details?.student_status?.replace(
+                    /\s+/g,
+                    "",
+                  ) === "Suspended"
+                    ? "#facc15"
+                    : "transparent",
+                color: "#fff",
+                fontWeight: "600",
+                fontSize: "14px",
+                padding:
+                  feesData.feeData.student_details?.student_status?.replace(
+                    /\s+/g,
+                    "",
+                  ) === "Suspended"
+                    ? "12px 14px"
+                    : "0",
+                borderRadius: "8px",
+                textAlign: "center",
+                minWidth: "90px",
+                boxShadow:
+                  feesData.feeData.student_details?.student_status?.replace(
+                    /\s+/g,
+                    "",
+                  ) === "Suspended"
+                    ? "0 2px 6px rgba(0,0,0,0.15)"
+                    : "none",
+              }}
+            >
+              {feesData.feeData.student_details?.student_status?.replace(
+                /\s+/g,
+                "",
+              ) === "Suspended"
+                ? "Inactive"
+                : ""}
+            </span>
           </div>
         </Col>
         {params.type ? (

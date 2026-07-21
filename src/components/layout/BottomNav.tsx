@@ -20,9 +20,11 @@ import HostelReportNav from "./bottomNavComponents/HostelReportNav";
 import AcademicDcbReportsNav from "./bottomNavComponents/AcademicDcbReportsNav";
 import TransportDcbReportNav from "./bottomNavComponents/TransportDcbReportNav";
 import HostelDcbReportsNav from "./bottomNavComponents/HostelDcbReportsNav";
+import { setClassWiseFilters } from "../../slices/classWiseSlice/classWiseSlice";
 export default function BottomNav(props: any) {
   const loginTypeId = localStorage.getItem("roleId");
   const location = useLocation();
+
   const dispatch = useDispatch();
   const history = useNavigate();
   const customStyles = {
@@ -157,8 +159,17 @@ export default function BottomNav(props: any) {
       divisionSearch: divisionName,
       year: year,
     };
+
     dispatch(tryFetchClassSearchList(searchValue));
-    history(`/class-wise-list/${year}`);
+    dispatch(
+      setClassWiseFilters({
+        year: year || "",
+        classId: className || "",
+        divisionId: divisionName || "",
+      }),
+    );
+
+    history(`/class-wise-list`);
   }
 
   function fetchStudentSearch() {
@@ -238,7 +249,7 @@ export default function BottomNav(props: any) {
               styles={customStyles}
               onChange={handleYear}
               value={academicYearOptions.filter(
-                (filteredYear) => filteredYear.label == year
+                (filteredYear) => filteredYear.label == year,
               )}
             />
             <div className="custom-search">
@@ -322,14 +333,13 @@ export default function BottomNav(props: any) {
         <ReportNav />
       ) : props.navStatus === "TransportReports" ? (
         <TransportReportNav />
-      ): props.navStatus === "AcademicDCBreport" ? (
+      ) : props.navStatus === "AcademicDCBreport" ? (
         <AcademicDcbReportsNav />
       ) : props.navStatus === "TransportDCBreport" ? (
         <TransportDcbReportNav />
-      )  : props.navStatus === "hostelDCBreport" ? (
+      ) : props.navStatus === "hostelDCBreport" ? (
         <HostelDcbReportsNav />
-      )  
-      : props.navStatus === "TransportStudentList" ? (
+      ) : props.navStatus === "TransportStudentList" ? (
         <TransportStudentListNav />
       ) : props.navStatus === "HostelReports" ? (
         <HostelReportNav />

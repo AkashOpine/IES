@@ -79,7 +79,7 @@ export const ProtectedLayout = () => {
       bottombar = "MainSearchNav";
       navStyle = "btm-nav";
       break;
-    case `/class-wise-list/${params.year}`:
+    case `/class-wise-list`:
       bottombar = "MainSearchNav";
       navStyle = "btm-nav";
       break;

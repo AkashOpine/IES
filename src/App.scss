@@ -216,31 +216,29 @@ input:focus {
     .receipt-row {
       display: flex !important;
       align-items: flex-start;
-      margin-bottom: 6px;
       width: 100%;
       padding: 4px 0px;
       font-size: 12px;
     }
 
     .receipt-row .label {
-      width: 120px;
-      font-weight: 600;
+      font-weight: 500;
       flex-shrink: 0;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .receipt-row .colon {
       width: 8px;
       padding: 0px 5px;
       text-align: center;
-      font-weight: 600;
+      font-weight: 500;
       flex-shrink: 0;
     }
 
     .receipt-row .value {
-      font-size: 11px;
+      font-size: 12px;
       flex: 1;
-      font-weight: 500;
+      font-weight: 400;
       word-break: break-word;
     }
 
@@ -250,7 +248,7 @@ input:focus {
           // min-width: 12rem;
         }
         th {
-          font-size: 13px !important;
+          font-size: 12px !important;
           font-weight: 500;
         }
         .table-body {
@@ -645,7 +643,22 @@ input:required:invalid {
     background: white;
   }
 }
+.form-text-area {
+  border-radius: 6px;
+  border: 1px solid #f3f6f9;
+  width: 100%;
 
+  padding: 0 0.75em;
+  &.form-textarea {
+    padding-top: 10px;
+    height: 80px;
+  }
+  &:focus {
+    outline: none;
+    border: 2px solid #3b58f270;
+    background: white;
+  }
+}
 .file-input-container {
   position: relative;
   .form-input-file {
@@ -1232,14 +1245,15 @@ input:required:invalid {
 }
 
 .receipt-row {
-  display: grid;
-  grid-template-columns: 140px 12px auto;
+  display: flex;
+  flex-wrap: wrap;
   align-items: start;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
   padding: 4px 0px;
 }
 
 .receipt-row .label {
+  min-width: 100px;
   font-weight: 600;
   text-align: left;
 }
@@ -1342,7 +1356,274 @@ input:required:invalid {
 ::-webkit-scrollbar-thumb:hover {
   background: #b30000;
 }
+/* ── Pay Modal ── */
+.pay-modal-centered .modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 60px);
+  margin: 30px auto;
+  max-width: 900px;
+    min-width: 400px;
+
+  padding: 0 16px;
+}
+
+.pay-modal-centered .modal-content {
+  width: 100%;
+  min-width: 400px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* ── Modal Header ── */
+.pay-modal-header {
+  background-color: #f8f9fa;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.pay-modal-student-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pay-modal-avatar-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+}
+
+.pay-modal-avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pay-modal-student-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 2px;
+}
+
+.pay-modal-student-meta {
+  font-size: 13px;
+  color: #6c757d;
+  margin: 0;
+}
+
+.pay-modal-badge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 10px;
+  font-size: 11px;
+  border-radius: 20px;
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.pay-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.pay-modal-close-btn:hover {
+  color: #212529;
+}
+
+/* ── Modal Body ── */
+.pay-modal-body {
+  padding: 20px;
+}
+
+/* ── Fee Table ── */
+.pay-modal-table-wrap {
+  overflow-x: auto;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.pay-modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 0;
+}
+
+.pay-modal-table thead tr {
+  background-color: #f1f3f5;
+}
+
+.pay-modal-table th {
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #495057;
+  border-bottom: 1px solid #dee2e6;
+  white-space: nowrap;
+}
+
+.pay-modal-table td {
+  padding: 9px 14px;
+  color: #212529;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.pay-modal-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.pay-modal-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.pay-modal-table .pay-modal-total-row td {
+  font-weight: 700;
+  background-color: #f1f3f5;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Sticky first column in partial payment mode */
+.pay-modal-sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: #fff;
+  z-index: 1;
+}
+
+.pay-modal-table thead .pay-modal-sticky-col {
+  background-color: #f1f3f5;
+  z-index: 2;
+}
+
+/* ── Fee input (partial mode) ── */
+.pay-modal-fee-input {
+  width: 70px;
+  padding: 4px 6px;
+  font-size: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.pay-modal-fee-input:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+/* ── Payment Method Radio Row ── */
+.pay-modal-method-row {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 13px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pay-modal-method-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  color: #495057;
+}
+
+.pay-modal-method-option input[type="radio"] {
+  accent-color: #0d6efd;
+  cursor: pointer;
+}
+
+/* ── Payment Reference Input ── */
+.pay-modal-ref-input {
+  width: 100%;
+  margin-top: 16px;
+  padding: 9px 14px;
+  font-size: 13px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+  color: #212529;
+}
+
+.pay-modal-ref-input:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+/* ── Remarks Textarea ── */
+.pay-modal-remarks {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 14px;
+  font-size: 13px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  color: #212529;
+}
+
+.pay-modal-remarks:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+/* ── Pay Button ── */
+.pay-modal-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 40px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #0d6efd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.pay-modal-submit-btn:hover {
+  background-color: #0b5ed7;
+}
+
+.pay-modal-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ── */
+@media (max-width: 576px) {
+  .pay-modal-centered .modal-content {
+    min-width: unset;
+    width: 100%;
+  }
+}
 .pay-modal-summary {
+  .modal-content{
+    width: max-content;
+    padding: 10px;
+  }
   .modalHeader {
     padding: 1em;
     button {
@@ -1365,6 +1646,8 @@ input:required:invalid {
   }
   .modalBody {
     padding: 1em;
+    min-width:500px;
+    max-width: max-content;
     .table-body {
       font-size: 14px;
       tr {
@@ -2332,4 +2615,91 @@ input:required:invalid {
   max-width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.total-payment-wrapper {
+  position: relative;
+  display: inline-block;
+
+  .switch {
+    font-size: 17px;
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 18px;
+
+    .tooltip {
+      visibility: hidden;
+      width: 120px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%; /* Position the tooltip above the checkbox */
+      left: 50%;
+      margin-left: -60px; /* Center the tooltip */
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%; /* Arrow pointing downwards */
+      left: 50%;
+      margin-left: -15px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+    }
+
+    input:hover + .slider + .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    transition: 0.4s;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 0.9em;
+    width: 0.9em;
+    border-radius: 16px;
+    left: 1.2px;
+    top: 0;
+    bottom: 0;
+    background-color: white;
+    box-shadow: 0 2px 5px #999999;
+    transition: 0.4s;
+  }
+
+  input:checked + .slider {
+    background-color: #5fdd54;
+    border: 1px solid transparent;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(0.57em);
+  }
 }

@@ -55,6 +55,19 @@ const apiPost = (endPoint, reqdata) => {
     console.log(error);
   }
 };
+const apiPostBase64File = async (endPoint, reqdata) => {
+  const response = await axios.post(endPoint, reqdata);
+
+  return response.data; // 🔥 always returns JSON data
+};
+ const apiPostPdf = async (endPoint, reqdata) => {
+  const response = await axios.post(endPoint, reqdata, {
+    responseType: "blob", // 🔥 IMPORTANT
+  });
+
+  return response; // AxiosResponse<Blob>
+};
+
 const apiPut = (endPoint, reqdata) => {
   try {
     return axios
@@ -117,4 +130,4 @@ const apiDelete = (endPoint) => {
   }
 };
 
-export { apiPost, apiGet, apiPut, apiDelete };
+export { apiPost, apiGet, apiPut, apiDelete ,apiPostBase64File, apiPostPdf};

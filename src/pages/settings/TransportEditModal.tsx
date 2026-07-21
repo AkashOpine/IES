@@ -29,11 +29,17 @@ function TransportEditModal(props: any) {
   );
   const [tuition, setTuition] = useState(parseInt(props.datas?.akash));
   const [fee, setFee]: any = useState(props.datas?.fee_amount || 0);
+
   const [tuitionFee, setTuitionFee]: any = useState(
     props.datas?.akash !== 0 ? 1000 : 0,
   );
   const [totalFee, setTotalFee]: any = useState(0.0);
   const [selectedMonth, setSelectedMonth]: any = useState([]);
+  const [remarks, setRemarks]: any = useState([]);
+
+  useEffect(() => {
+    console.log("props.datas", props.datas);
+  }, [props.datas]);
 
   const [monthDetails, setMonthDetails] = useState([
     { month: "Apr", month_id: 4, isCheckBox: true, feeInput: 0 },
@@ -54,20 +60,20 @@ function TransportEditModal(props: any) {
   useEffect(() => {
     if (props?.datas) {
       setMonthDetails([
-        { month: "Apr", month_id: 4, isCheckBox: true, feeInput: 0 },
-        { month: "May", month_id: 5, isCheckBox: true, feeInput: 0 },
-        { month: "Jun", month_id: 6, isCheckBox: true, feeInput: 0 },
-        { month: "Jul", month_id: 7, isCheckBox: true, feeInput: 0 },
-        { month: "Aug", month_id: 8, isCheckBox: true, feeInput: 0 },
-        { month: "Sep", month_id: 9, isCheckBox: true, feeInput: 0 },
-        { month: "Oct", month_id: 10, isCheckBox: true, feeInput: 0 },
-        { month: "Nov", month_id: 11, isCheckBox: true, feeInput: 0 },
-        { month: "Dec", month_id: 12, isCheckBox: true, feeInput: 0 },
-        { month: "Jan", month_id: 1, isCheckBox: true, feeInput: 0 },
-        { month: "Feb", month_id: 2, isCheckBox: true, feeInput: 0 },
-        { month: "Mar", month_id: 3, isCheckBox: true, feeInput: 0 },
-        { month: "Apr", month_id: 13, isCheckBox: true, feeInput: 0 },
-        { month: "May", month_id: 14, isCheckBox: true, feeInput: 0 },
+        { month: "Apr", month_id: 4, isCheckBox: false, feeInput: 0 },
+        { month: "May", month_id: 5, isCheckBox: false, feeInput: 0 },
+        { month: "Jun", month_id: 6, isCheckBox: false, feeInput: 0 },
+        { month: "Jul", month_id: 7, isCheckBox: false, feeInput: 0 },
+        { month: "Aug", month_id: 8, isCheckBox: false, feeInput: 0 },
+        { month: "Sep", month_id: 9, isCheckBox: false, feeInput: 0 },
+        { month: "Oct", month_id: 10, isCheckBox: false, feeInput: 0 },
+        { month: "Nov", month_id: 11, isCheckBox: false, feeInput: 0 },
+        { month: "Dec", month_id: 12, isCheckBox: false, feeInput: 0 },
+        { month: "Jan", month_id: 1, isCheckBox: false, feeInput: 0 },
+        { month: "Feb", month_id: 2, isCheckBox: false, feeInput: 0 },
+        { month: "Mar", month_id: 3, isCheckBox: false, feeInput: 0 },
+        { month: "Apr", month_id: 13, isCheckBox: false, feeInput: 0 },
+        { month: "May", month_id: 14, isCheckBox: false, feeInput: 0 },
       ]);
     }
   }, [props.datas, route, pickup, tuition, routeType]);
@@ -175,6 +181,7 @@ function TransportEditModal(props: any) {
             month.feeInput.toString(),
           );
         });
+      bodyFormData.append("remark", remarks);
 
       const resp: any = await apiPost(UPDATE_TRANSPORT_SETTING, bodyFormData);
       if (resp.response.data.status === 200 && resp.response.data.data) {
@@ -438,6 +445,21 @@ function TransportEditModal(props: any) {
                   />
                   <label>Two way</label>
                 </div>
+              </Col>
+            </Row>
+            <Row className="form-inputs-row mt-2">
+              <Col md={12}>
+                <label htmlFor="remarks" className="mb-2">
+                  Remarks
+                </label>
+                <textarea
+                  id="remarks"
+                  className="form-text-area"
+                  placeholder="Remarks"
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  rows={5}
+                />
               </Col>
             </Row>
             <Row>

@@ -14,16 +14,42 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { useSelector } from "react-redux";
 import Loader from "../../components/layout/aggrid/Loader";
 import PaymentModeReportHeader from "./headerComponents/PaymentModeReportHeader";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaPrint } from "react-icons/fa";
 import { onBtExport } from "./headerComponents/ExportExcel";
+import FeeReceiptModal from "../receipt/FeeReceiptModal";
 
 function PaymentMode() {
   const paymentModeReport: any = useSelector(
-    (state: any) => state.paymentreport
+    (state: any) => state.paymentreport,
   );
   const gridRef: any = useRef();
   const [rowData, setRowData] = useState([]);
   const [gridApi, setGridApi]: any = useState(null);
+  const [printReceiptId, setPrintReceiptId] = useState<number | null>(null);
+  const PrintCellRenderer = (params: any) => {
+    return (
+      <button
+        type="button"
+        className="print-row-btn"
+        title="Print this row"
+        onClick={() => setPrintReceiptId(params.data.id)}
+        style={{
+          border: "none",
+          background: "transparent",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
+          color: "red",
+          fontSize: "16px",
+        }}
+      >
+        <FaPrint />
+      </button>
+    );
+  };
   const [columnDefs, setColumnDefs] = useState([
     {
       headerName: "Sl.no",
@@ -139,6 +165,19 @@ function PaymentMode() {
       headerName: "Remarks",
       headerTooltip: "Remarks",
     },
+    {
+      headerName: "Print",
+      field: "print",
+      pinned: "right" as const,
+      lockPinned: true,
+      width: 90,
+      sortable: false,
+      filter: false,
+      resizable: false,
+      suppressMenu: true,
+      cellRenderer: PrintCellRenderer,
+      headerTooltip: "Print this row",
+    },
   ]);
 
   const defaultColDef = useMemo(
@@ -147,7 +186,7 @@ function PaymentMode() {
       resizable: true,
       sortable: true,
     }),
-    []
+    [],
   );
   const sideBar: any = {
     toolPanels: [
@@ -182,7 +221,7 @@ function PaymentMode() {
     (params: any) => {
       return paymentModeReport.paymentModeReportData;
     },
-    [paymentModeReport.paymentModeReportData]
+    [paymentModeReport.paymentModeReportData],
   );
   useEffect(() => {}, [paymentModeReport.paymentModeReportData]);
 
@@ -227,6 +266,11 @@ function PaymentMode() {
             <Spinner animation="grow" variant="primary" />
           </Col>
         )}
+        <FeeReceiptModal
+          show={printReceiptId !== null}
+          setShow={(show: any) => !show && setPrintReceiptId(null)}
+          slipId={printReceiptId}
+        />
       </Row>
     </>
   );

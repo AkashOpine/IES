@@ -136,7 +136,7 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                 >
                   <span className="receipt-head">
                     MISCELLANEOUS COLLECTION RECEIPT{" "}
-                    {props?.receiptData?.academic_year}
+                    {props?.receiptData?.master?.academic_year}
                   </span>
                 </Col>
               </Row>
@@ -148,14 +148,17 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                     <span className="colon">:</span>
                     <span className="value">
                       {" "}
-                      {props?.receiptData?.receipt_no}
+                      {props?.receiptData?.master?.receipt_no}
                     </span>
                   </div>
 
                   <div className="receipt-row">
                     <span className="label">Date</span>
                     <span className="colon">:</span>
-                    <span className="value"> {props?.receiptData?.date}</span>
+                    <span className="value">
+                      {" "}
+                      {props?.receiptData?.master?.date}
+                    </span>
                   </div>
 
                   <div className="receipt-row">
@@ -163,7 +166,7 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                     <span className="colon">:</span>
                     <span className="value">
                       {" "}
-                      {props?.receiptData?.payment_mode}
+                      {props?.receiptData?.master?.payment_mode}
                     </span>
                   </div>
                 </Col>
@@ -174,14 +177,17 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                     <span className="colon">:</span>
                     <span className="value">
                       {" "}
-                      {props?.receiptData?.student_name}
+                      {props?.receiptData?.master?.student_name}
                     </span>
                   </div>
 
                   <div className="receipt-row">
                     <span className="label">Admission Number</span>
                     <span className="colon">:</span>
-                    <span className="value"> {props?.receiptData?.adm_no}</span>
+                    <span className="value">
+                      {" "}
+                      {props?.receiptData?.master?.adm_no}
+                    </span>
                   </div>
 
                   <div className="receipt-row">
@@ -189,7 +195,8 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                     <span className="colon">:</span>
                     <span className="value">
                       {" "}
-                      {props?.receiptData?.class_div}
+                      {props?.receiptData?.master?.class_name}-
+                      {props?.receiptData?.master?.divison_name}
                     </span>
                   </div>
                 </Col>
@@ -205,8 +212,8 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                       </tr>
                     </thead>
                     <tbody className="table-body">
-                      {props?.receiptData?.fee_list?.length > 0
-                        ? props?.receiptData?.fee_list.map((item: any) => {
+                      {props?.receiptData?.details?.length > 0
+                        ? props?.receiptData?.details?.map((item: any) => {
                             if (item.fee_head_name !== "") {
                               return (
                                 <tr>
@@ -223,7 +230,7 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                         <td>Total</td>
                         <td className="text-center">
                           {" "}
-                          {props?.receiptData?.total_fee_amount}
+                          {props?.receiptData?.master?.total_fee_amount}
                         </td>
                       </tr>
                     </tbody>
@@ -237,7 +244,9 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                       <div>
                         <span className="bold mt-2">
                           {numberToWords(
-                            Number(props?.receiptData?.total_fee_amount),
+                            Number(
+                              props?.receiptData?.master?.total_fee_amount,
+                            ),
                           )}
                         </span>
                       </div>
@@ -251,7 +260,7 @@ function MiscellaneousCollectionReceiptModal(props: any) {
                     <div className="d-flex gap-2 extra-charge-item">
                       <span className="bold">Remarks</span>
                       <span className="bold">:</span>
-                      <span>{props?.receiptData?.remarks}</span>
+                      <span>{props?.receiptData?.master?.remarks}</span>
                     </div>
                   </div>
                 </Col>

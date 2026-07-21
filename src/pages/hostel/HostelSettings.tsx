@@ -1,10 +1,19 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import DataTable, { Alignment } from "react-data-table-component";
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-enterprise";
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { Overlay, Popover } from "react-bootstrap";
-import { FaDownload, FaEye, FaPencilAlt, FaTrash } from "react-icons/fa";
+import { FaEye, FaPencilAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { tryFetchReceiptData } from "../../slices/receipt/receiptSlice";
@@ -19,6 +28,7 @@ import EditHostelSettingModal from "./EditHostelSettingModal";
 
 function HostelSettings() {
   const ref = useRef(null);
+  const gridRef: any = useRef();
   const dispatch = useDispatch();
   const hostelData: any = useSelector((state: any) => state.hostel);
   const [openModal, setOpenModal]: any = useState(false);
@@ -30,7 +40,7 @@ function HostelSettings() {
   const [target, setTarget] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState(
-    hostelData.hostelStudentData
+    hostelData.hostelStudentData,
   );
 
   const handleDiscontinueModal = (event: any, id: any) => {
@@ -82,99 +92,130 @@ function HostelSettings() {
     setConcessionId(row);
     // dispatch(tryFetchSingleHostelerDetails(row));
   };
-  const columns: any = [
-    {
-      name: "Sl.no",
-      selector: (row: any, rowIndex: number) => rowIndex + 1,
-      width: "100px",
-    },
-    {
-      name: "Student Name",
-      selector: (row: any) => row.student_name,
-      sortable: true,
-    },
-    {
-      name: "Admission No",
-      selector: (row: any) => row.old_admission_no,
-      sortable: true,
-    },
-    {
-      name: "Class",
-      selector: (row: any) => row.class_id + " " + row.division_id,
-      sortable: true,
-    },
-    {
-      name: "Hostel Type",
-      selector: (row: any) => row.hostel_type,
-      sortable: true,
-    },
-    {
-      name: "Room Type",
-      selector: (row: any) => row.room_type,
-      sortable: true,
-    },
-    {
-      name: "Room Number",
-      selector: (row: any) => row.room_no,
-      sortable: true,
-    },
-    {
-      name: "Hostel Fee",
-      selector: (row: any) => row.hostel_fee,
-      sortable: true,
-    },
-    {
-      name: "Admission Fee",
-      selector: (row: any) => row.admission_fee,
-      sortable: true,
-    },
-    {
-      name: "Caution Deposit",
-      selector: (row: any) => row.caution_deposit,
-      sortable: true,
-    },
-    {
-      name: "Store Deposit",
-      selector: (row: any) => row.store_deposit,
-      sortable: true,
-    },
-    {
-      name: "Establishment Fee",
-      selector: (row: any) => row.establishment_fee,
-      sortable: true,
-    },
-    {
-      name: "Action",
-      button: true,
-      cell: (row: any) => (
-        <div className="d-flex align-items-center gap-2">
-          <Link
-            to={`/individual-hostel-setting/${row.student_id}`}
-            role="button"
-            className="round-btn-group balance"
-            onClick={(e) => handleConcession(row.student_id)}
-            // disabled={row.id === concessionId}
-          >
-            <FaEye color="#556EE6" size={15} />
-          </Link>
-          <div
-            className="settings-btn editBtn round-btn-group balance "
-            onClick={() => handleEditModel(row)}
-          >
-            <FaPencilAlt size={15} />
-          </div>
-          <div
-            className="button-datatable pad-2"
-            onClick={(e) => handleDiscontinueModal(e, row.student_id)}
-          >
-            {/* <FaTrash size={12} color="#ffffff" /> */}
-            <span className="text-nowrap">Discontinue</span>
-          </div>
+
+  // Cell renderer for the sticky Action column
+  const ActionCellRenderer = (params: any) => {
+    const row = params.data;
+    return (
+      <div className="d-flex align-items-center gap-2">
+        <Link
+          to={`/individual-hostel-setting/${row.student_id}`}
+          role="button"
+          className="round-btn-group balance"
+          onClick={() => handleConcession(row.student_id)}
+        >
+          <FaEye color="#556EE6" size={15} />
+        </Link>
+        <div
+          className="settings-btn editBtn round-btn-group balance "
+          onClick={() => handleEditModel(row)}
+        >
+          <FaPencilAlt size={15} />
         </div>
-      ),
-      width: "180px",
+        <div
+          className="button-datatable pad-2"
+          onClick={(e) => handleDiscontinueModal(e, row.student_id)}
+        >
+          <span className="text-nowrap">Discontinue</span>
+        </div>
+      </div>
+    );
+  };
+
+  const columnDefs: any = [
+    {
+      headerName: "Sl.no",
+      valueGetter: (params: any) =>
+        params.node ? params.node.rowIndex + 1 : null,
+      width: 100,
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
+    },
+    {
+      field: "student_name",
+      headerName: "Student Name",
+      sortable: true,
+    },
+    {
+      field: "old_admission_no",
+      headerName: "Admission No",
+      sortable: true,
+    },
+    {
+      headerName: "Class",
+      valueGetter: (params: any) =>
+        params.data.class_id + " " + params.data.division_id,
+      sortable: true,
+    },
+    {
+      field: "hostel_type",
+      headerName: "Hostel Type",
+      sortable: true,
+    },
+    {
+      field: "remark",
+      headerName: "Remark",
+      sortable: true,
+    },
+    {
+      field: "room_type",
+      headerName: "Room Type",
+      sortable: true,
+    },
+
+    {
+      field: "room_no",
+      headerName: "Room Number",
+      sortable: true,
+    },
+    {
+      field: "hostel_fee",
+      headerName: "Hostel Fee",
+      sortable: true,
+    },
+    {
+      field: "admission_fee",
+      headerName: "Admission Fee",
+      sortable: true,
+    },
+    {
+      field: "caution_deposit",
+      headerName: "Caution Deposit",
+      sortable: true,
+    },
+    {
+      field: "store_deposit",
+      headerName: "Store Deposit",
+      sortable: true,
+    },
+    {
+      field: "establishment_fee",
+      headerName: "Establishment Fee",
+      sortable: true,
+    },
+
+    {
+      headerName: "Action",
+      field: "action",
+      pinned: "right" as const,
+      lockPinned: true,
+      width: 230,
+      sortable: false,
+      filter: false,
+      resizable: false,
+      suppressMenu: true,
+      cellRenderer: ActionCellRenderer,
     },
   ];
+
+  const defaultColDef = useMemo(
+    () => ({
+      filter: true,
+      resizable: true,
+      sortable: true,
+    }),
+    [],
+  );
 
   const handleSearch = (searchValue: string) => {
     setSearchTerm(searchValue.toLowerCase());
@@ -182,7 +223,7 @@ function HostelSettings() {
     const filteredResults = hostelData.hostelStudentData.filter(
       (row: any) =>
         row.student_name.toLowerCase().endsWith(lowerCaseSearchValue) ||
-        row.old_admission_no.toLowerCase().endsWith(lowerCaseSearchValue)
+        row.old_admission_no.toLowerCase().endsWith(lowerCaseSearchValue),
     );
     setFilteredData(filteredResults);
   };
@@ -227,23 +268,35 @@ function HostelSettings() {
       hostelData.hostelStudentData.filter(
         (row: any) =>
           row.student_name.toLowerCase().includes(searchTerm) ||
-          row.old_admission_no.toLowerCase().includes(searchTerm)
-      )
+          row.old_admission_no.toLowerCase().includes(searchTerm),
+      ),
     );
   }, [hostelData.hostelStudentData, searchTerm]);
+
+  const onGridReady = useCallback(
+    (params: any) => {
+      return filteredData;
+    },
+    [filteredData],
+  );
+
   return (
     <>
       <div className="page-inner-content" ref={ref}>
-        <DataTable
-          columns={columns}
-          // data={hostelData.hostelStudentData}
-          data={filteredData}
-          selectableRows
-          subHeader
-          subHeaderComponent={headerComponent}
-          subHeaderAlign={Alignment.LEFT}
-          pagination
-        />
+        {headerComponent}
+        <div className="ag-theme-alpine grid-table mt-2">
+          <AgGridReact
+            ref={gridRef}
+            rowData={filteredData}
+            columnDefs={columnDefs}
+            animateRows={true}
+            rowSelection="multiple"
+            defaultColDef={defaultColDef}
+            suppressRowClickSelection={true}
+            pagination
+            onGridReady={onGridReady}
+          />
+        </div>
       </div>
       <AddHostelSettingModal modalOpen={openModal} setOpen={setOpenModal} />
       <EditHostelSettingModal

@@ -56,6 +56,8 @@ function TableDetails() {
   const [diaryFeeRow, setDiaryFeeRow]: any = useState([]);
   const [diaryFeeRow1, setDiaryFeeRow1]: any = useState([]);
   const [diaryFeeRow2, setDiaryFeeRow2]: any = useState([]);
+  const [diaryFeeRow3, setDiaryFeeRow3]: any = useState([]);
+
   const [tableRowName1, settableRowName1]: any = useState("");
   const [tableRowName2, settableRowName2]: any = useState("");
   const [tableRowName3, settableRowName3]: any = useState("");
@@ -66,6 +68,8 @@ function TableDetails() {
   const [diaryFeeName, setDiaryFeeName]: any = useState("");
   const [diaryFeeName1, setDiaryFeeName1]: any = useState("");
   const [diaryFeeName2, setDiaryFeeName2]: any = useState("");
+  const [diaryFeeName3, setDiaryFeeName3]: any = useState("");
+
   const [hostalFeeName, setHostalFeeName]: any = useState("");
   const [admissionFeeName, setAdmissionFeeName]: any = useState("");
   const [cautionDepositName, setCautionDepositeName]: any = useState("");
@@ -79,17 +83,8 @@ function TableDetails() {
     ? monthDetails // show everything
     : monthDetails.filter((m) => m.month_id !== 13 && m.month_id !== 14);
 
-  
-
   const setAllDatas = () => {
     let table = tableFeeData;
-    let tablerow1: Array<Object> = [];
-
-    let tablerow2: Array<Object> = [];
-    let tablerow3: Array<Object> = [];
-    let tablerow4: Array<Object> = [];
-    let tablerow5: Array<Object> = [];
-    let tablerow6: Array<Object> = [];
     let hostelrow: Array<Object> = [];
     let busFeeRow: Array<Object> = [];
     let admissionFeeRow: Array<Object> = [];
@@ -97,6 +92,7 @@ function TableDetails() {
     let diaryFeeTableRow: Array<Object> = [];
     let diaryFeeTableRow1: Array<Object> = [];
     let diaryFeeTableRow2: Array<Object> = [];
+    let diaryFeeTableRow3: Array<Object> = [];
 
     if (feesData.feeData.fee_details) {
       settableRowName1(feesData.feeData.fee_details[0]?.dlbFeeheadName);
@@ -105,43 +101,28 @@ function TableDetails() {
       settableRowName4(feesData.feeData.fee_details[3]?.dlbFeeheadName);
       settableRowName5(feesData.feeData.fee_details[4]?.dlbFeeheadName);
       settableRowName6(feesData.feeData.fee_details[5]?.dlbFeeheadName);
-      tablerow1 = table?.map(
-        (obj: any) =>
-          feesData.feeData.fee_details[0]?.fee?.find(
-            (o: any) => o.month_id === obj.month_id,
-          ) || obj,
-      );
-      tablerow2 = table?.map(
-        (obj: any) =>
-          feesData.feeData.fee_details[1]?.fee?.find(
-            (o: any) => o.month_id === obj.month_id,
-          ) || obj,
-      );
-      tablerow3 = table?.map(
-        (obj: any) =>
-          feesData.feeData.fee_details[2]?.fee?.find(
-            (o: any) => o.month_id === obj.month_id,
-          ) || obj,
-      );
 
-      tablerow4 = table?.map(
-        (obj: any) =>
-          feesData.feeData.fee_details[3]?.fee?.find(
-            (o: any) => o.month_id === obj.month_id,
-          ) || obj,
-      );
-      tablerow5 = table?.map(
-        (obj: any) =>
-          feesData.feeData.fee_details[4]?.fee?.find(
-            (o: any) => o.month_id === obj.month_id,
-          ) || obj,
-      );
-      tablerow6 = table?.map(
-        (obj: any) =>
-          feesData.feeData.fee_details[5]?.fee?.find(
-            (o: any) => o.month_id === obj.month_id,
-          ) || obj,
-      );
+      const getMappedRow = (index: number) => {
+        const feeDetail = feesData.feeData.fee_details?.[index];
+
+        return table?.map((obj: any) => {
+          const matched =
+            feeDetail?.fee?.find((o: any) => o.month_id === obj.month_id) ||
+            obj;
+
+          return {
+            ...matched,
+            fee_settings_id: feeDetail?.fee_settings_id,
+          };
+        });
+      };
+
+      const tablerow1 = getMappedRow(0);
+      const tablerow2 = getMappedRow(1);
+      const tablerow3 = getMappedRow(2);
+      const tablerow4 = getMappedRow(3);
+      const tablerow5 = getMappedRow(4);
+      const tablerow6 = getMappedRow(5);
       setTableRow1(tablerow1);
       setTableRow2(tablerow2);
       setTableRow3(tablerow3);
@@ -149,14 +130,24 @@ function TableDetails() {
       setTableRow5(tablerow5);
       setTableRow6(tablerow6);
     }
+
     if (feesData.feeData.transport_details) {
       setBusFeeName(feesData.feeData.transport_details?.dlbFeeheadName);
-      busFeeRow = table?.map(
-        (obj: any) =>
-          feesData.feeData.transport_details?.fee?.find(
-            (o: any) => o.month_id === obj.month_id,
-          ) || obj,
-      );
+
+      const feeSettingsId = feesData.feeData.transport_details?.fee_settings_id;
+
+      busFeeRow = table?.map((obj: any) => {
+        const matchedFee = feesData.feeData.transport_details?.fee?.find(
+          (o: any) => o.month_id === obj.month_id,
+        );
+
+        return {
+          ...obj,
+          ...matchedFee, // merge matched fee if exists
+          fee_settings_id: feeSettingsId, // add new field
+        };
+      });
+
       setBusFeeRow(busFeeRow);
     }
 
@@ -165,12 +156,20 @@ function TableDetails() {
       setHostalFeeName(feesData.feeData.hostel_details[0]?.feehead_name);
       setAdmissionFeeName(feesData.feeData.hostel_details[1]?.feehead_name);
       setCautionDepositeName(feesData.feeData.hostel_details[2]?.feehead_name);
-      hostelrow = table?.map(
-        (obj: any) =>
-          feesData.feeData.hostel_details[0]?.hostel_fee?.find(
-            (o: any) => o.month_id === obj.month_id,
-          ) || obj,
-      );
+      hostelrow = table?.map((obj: any) => {
+        const matchedFee = feesData.feeData.hostel_details[0]?.hostel_fee?.find(
+          (o: any) => o.month_id === obj.month_id,
+        );
+
+        return matchedFee
+          ? {
+              ...obj,
+              ...matchedFee,
+              fee_settings_id:
+                feesData.feeData.hostel_details[0]?.feesettings_id,
+            }
+          : obj;
+      });
       admissionFeeRow = table?.map(
         (obj: any) =>
           feesData.feeData.hostel_details[1]?.hostel_fee?.find(
@@ -183,6 +182,7 @@ function TableDetails() {
             (o: any) => o.month_id === obj.month_id,
           ) || obj,
       );
+      
       setHostelRow(hostelrow);
       setAdmissionFeeRow(admissionFeeRow);
       setCautionDepositRow(cautionDepositRow);
@@ -204,6 +204,7 @@ function TableDetails() {
           ) || obj,
       );
       setDiaryFeeRow1(diaryFeeTableRow1);
+
       setDiaryFeeName2(feesData.feeData.efee_details[2]?.dlbFeeheadName);
       diaryFeeTableRow2 = table?.map(
         (obj: any) =>
@@ -212,6 +213,15 @@ function TableDetails() {
           ) || obj,
       );
       setDiaryFeeRow2(diaryFeeTableRow2);
+
+      setDiaryFeeName3(feesData.feeData.efee_details[3]?.dlbFeeheadName);
+      diaryFeeTableRow3 = table?.map(
+        (obj: any) =>
+          feesData.feeData.efee_details[3]?.fee?.find(
+            (o: any) => o.month_id === obj.month_id,
+          ) || obj,
+      );
+      setDiaryFeeRow3(diaryFeeTableRow3);
     }
   };
 
@@ -286,9 +296,9 @@ function TableDetails() {
   useEffect(() => {
     setAllDatas();
   }, [checkedState, feesData]);
-useEffect(() => {
-    console.log("busFeeRow", busFeeRow);
-  }, [busFeeRow]);
+  // useEffect(() => {
+  //   console.log("busFeeRow", busFeeRow);
+  // }, [busFeeRow]);
   // useEffect(() => {
   //   if (loginTypeId !== "5") {
   //     setDisabledCheckbox(true);
@@ -428,6 +438,33 @@ useEffect(() => {
                           checkedStatus={checkedState[index]}
                           month={item.month_name}
                           rowName={diaryFeeName2}
+                          handleClick={setDiaryFee}
+                          status={item.status}
+                          amount={item.amt}
+                          amount_to_be_paid={item.bal_to_be_paid}
+                          calculateTotal={calculateTotal}
+                          isCheckedByDefault
+                        />
+                      </td>
+                    );
+                  })}
+                </tr>
+              ) : (
+                ""
+              )}
+
+              {feesData.feeData.efee_details[3] ? (
+                <tr>
+                  <td className="bold "> {diaryFeeName3}</td>
+                  {diaryFeeRow3?.map((item: any, index: number) => {
+                    return (
+                      <td key={item.fee_settings_id}>
+                        <DiaryFeeTile
+                          data={item}
+                          monthId={item.month_id}
+                          checkedStatus={checkedState[index]}
+                          month={item.month_name}
+                          rowName={diaryFeeName3}
                           handleClick={setDiaryFee}
                           status={item.status}
                           amount={item.amt}

@@ -116,51 +116,59 @@ function ReceiptModal(props: any) {
               </Row>
               <Row className="mb-4 mt-4">
                 <Col md={6} xs={6}>
-                  <div className="receipt-item">
-                    <span>Receipt No</span>
-                    <span>{PreResp?.receipt_no}</span>
+                  <div className="receipt-row">
+                    <span className="label">Receipt No</span>
+                    <span className="colon">:</span>
+                    <span className="value">{PreResp?.receipt_no}</span>
                   </div>
-                  <div className="receipt-item">
-                    <span>Payment Mode</span>
-                    <span>{PreResp?.payment_mode}</span>
+                  <div className="receipt-row">
+                    <span className="label">Payment Mode</span>
+                    <span className="colon">:</span>
+                    <span className="value">{PreResp?.payment_mode}</span>
                   </div>
-                  <div className="receipt-item">
-                    <span>Date</span>
-                    <span>{PreResp?.date}</span>
-                  </div>{" "}
+                  <div className="receipt-row">
+                    <span className="label">Date</span>
+                    <span className="colon">:</span>
+                    <span className="value"> {PreResp?.date}</span>
+                  </div>
                   {/* <div className="receipt-item">
                     <span>Concession</span>
                     <span>{PreResp?.concession_type}</span>
                   </div>{" "} */}
                   {props.type === "admission" ? (
-                    <div className="receipt-item ">
-                      <span>Adm.No</span>
-                      <span>{PreResp?.old_admission_no}</span>
+                    <div className="receipt-row">
+                      <span className="label">Adm.No</span>
+                      <span className="colon">:</span>
+                      <span className="value">{PreResp?.old_admission_no}</span>
                     </div>
                   ) : (
                     ""
                   )}
                 </Col>
                 <Col md={6} xs={6}>
-                  <div className="receipt-item receipt-item-right">
-                    <span>Name</span>
-                    <span>{PreResp?.student_name}</span>
+                  <div className="receipt-row ">
+                    <span className="label">Name</span>
+                    <span className="colon">:</span>
+                    <span className="value">{PreResp?.student_name}</span>
                   </div>
 
-                  <div className="receipt-item receipt-item-right">
-                    <span>Class </span>
-                    <span>
+                  <div className="receipt-row ">
+                    <span className="label">Class </span>
+                    <span className="colon">:</span>
+                    <span className="value">
                       {PreResp?.class_of_admission}
                       {/* {props.type === "application" ? `-${PreResp?.div}` : ""} */}
                     </span>
                   </div>
-                  <div className="receipt-item receipt-item-right">
-                    <span>App.No</span>
-                    <span>{PreResp?.application_no}</span>
+                  <div className="receipt-row">
+                    <span className="label">App.No</span>
+                    <span className="colon">:</span>
+                    <span className="value">{PreResp?.application_no}</span>
                   </div>
-                  {/* <div className="receipt-item receipt-item-right">
-                    <span>Div </span>
-                    <span>{PreResp?.div}</span>
+                  {/* <div className="receipt-row ">
+                    <span className="label">Div </span>
+                    <span className="colon">:</span>
+                    <span className="value">{PreResp?.div}</span>
                   </div> */}
                 </Col>
               </Row>

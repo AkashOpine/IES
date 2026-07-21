@@ -13,18 +13,26 @@ import ReceiptModal from "./RecieptModal";
 import { customStyles } from "../../components/inputComponent/SelectStyle";
 import { tryFetchPreBookingTableData } from "../../slices/receipt/receiptSlice";
 import { useDispatch } from "react-redux";
+import { getSubDivListApi } from "../feeSettings/addFeeSettings/services";
 
 function ApproveModal(props: any) {
   const dispatch = useDispatch();
   const [admissionNumber, setAdmissionNumber] = useState(0);
   const [selectedDivision, setSelectedDivision] = useState("");
+  const [selectedSubDivision, setSelectedSubDivision] = useState("");
+
   const [paymentMode, setPaymentMode] = useState("");
   const [isScholarship, setIsScholarship] = useState(0);
   const [divisionList, setDivisionList] = useState([]);
+  const [subDivList, setSubDivList] = useState([]);
+
   const [isRecieptModal, setIsRecieptModal] = useState(false);
   const [admNo, setAdmNo] = useState("");
   const [respYear, setRespYear] = useState("");
 
+  useEffect(() => {
+    getSubDivListApi().then(setSubDivList).catch(console.error);
+  }, []);
   // Validation state
   const [errorMessage, setErrorMessage] = useState({
     admissionNumber: "",
@@ -38,7 +46,12 @@ function ApproveModal(props: any) {
       label: items.name,
     };
   });
-
+  const subDivOptions: any = subDivList.map((items: any) => {
+    return {
+      value: items.id,
+      label: items.name,
+    };
+  });
   const paymentOptions = [
     { value: "Card", label: "Card" },
     { value: "Cash", label: "Cash" },
@@ -46,12 +59,16 @@ function ApproveModal(props: any) {
     { value: "Online", label: "Online" },
     { value: "Adv.Fee", label: "Adv.Fee" },
   ];
+  useEffect(() => {
+    console.log("ops.rowData", props.rowData);
+  }, [props]);
 
   async function handleSave() {
     let hasError = false;
     const newErrorMessage = {
       admissionNumber: "",
       selectedDivision: "",
+    
       paymentMode: "",
     };
 
@@ -64,7 +81,10 @@ function ApproveModal(props: any) {
       newErrorMessage.selectedDivision = "Division is required";
       hasError = true;
     }
-
+    // if (selectedSubDivision === "") {
+    //   newErrorMessage.selectedSubDivision = "Sub Division is required";
+    //   hasError = true;
+    // }
     if (paymentMode === "") {
       newErrorMessage.paymentMode = "Payment mode is required";
       hasError = true;
@@ -87,6 +107,7 @@ function ApproveModal(props: any) {
       bodyFormData.append("academic_year", props.rowData.academic_year);
       bodyFormData.append("adm_no", admissionNumber.toString());
       bodyFormData.append("div", selectedDivision);
+      bodyFormData.append("sub_division_id", (selectedSubDivision || 0).toString());
       bodyFormData.append("payment_mode", paymentMode);
       bodyFormData.append("scholarship", isScholarship.toString());
 
@@ -100,6 +121,7 @@ function ApproveModal(props: any) {
         setIsRecieptModal(true);
         setAdmissionNumber(0);
         setSelectedDivision("");
+        setSelectedSubDivision("");
         setPaymentMode("");
         dispatch(tryFetchPreBookingTableData());
       }
@@ -162,13 +184,18 @@ function ApproveModal(props: any) {
     props.setOpen();
     setAdmissionNumber(0);
     setSelectedDivision("");
+    setSelectedSubDivision("");
     setPaymentMode("");
     setErrorMessage({
       admissionNumber: "",
       selectedDivision: "",
+     
       paymentMode: "",
     });
   };
+  useEffect(() => {
+    console.log("subdiv", selectedSubDivision);
+  }, [selectedSubDivision]);
 
   useEffect(() => {
     getDivisionList();
@@ -228,6 +255,24 @@ function ApproveModal(props: any) {
                 </div>
               )}
             </Col>
+            {["XI", "XII"].includes(props?.rowData?.class_name) && (
+              <Col
+                md={6}
+                className="setting-field-col"
+                style={{ marginBottom: "1rem" }}
+              >
+                <label>Sub Division</label>
+                <Select
+                  options={subDivOptions}
+                  value={subDivOptions.filter(
+                    (item: any) => item.value === selectedSubDivision,
+                  )}
+                  styles={customStyles}
+                  onChange={(e) => setSelectedSubDivision(e.value)}
+                  placeholder="Select Sub Division"
+                />
+              </Col>
+            )}
 
             <Col
               md={6}

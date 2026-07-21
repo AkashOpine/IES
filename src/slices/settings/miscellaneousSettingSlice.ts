@@ -25,16 +25,8 @@ const miscellaneousSettingSlice = createSlice({
       state.isLoading = false;
       state.miscellaneousSettingList = action.payload;
     },
-    setDefaultFeeHead: (state: any) => {
-      var tableData = {
-        fee_head_id: "",
-        amount: "",
-      };
-      state.addFeeHead = [...state.addFeeHead, tableData];
-      // return {
-      //   ...state,
-      //   addFeeHead: [...state.addFeeHead, tableData],
-      // };
+    setDefaultFeeHead: (state: any, action: any) => {
+      state.addFeeHead = action.payload;
     },
     deleteFeeHeadDiv: (state, action) => {
       var array = [...state.addFeeHead];
@@ -51,25 +43,28 @@ const miscellaneousSettingSlice = createSlice({
     //   state.addFeeHead[action.payload.index][action.payload.name] =
     //     action.payload.value;
     // },
-    updateFeeHeadDiv: (state, action: any) => {
-      console.log("feehead slice", action);
-      // Ensure addFeeHead is initialized as an array if it's undefined
-      if (!state.addFeeHead) {
-        state.addFeeHead = [];
+    updateFeeHeadDiv: (state, action) => {
+      const { index, ...fields } = action.payload;
+
+      if (!state.addFeeHead[index]) {
+        state.addFeeHead[index] = {
+          fee_head_id: "",
+          amount: "",
+          remarks: "",
+        };
       }
-      // Ensure the array at the specified index is initialized
-      if (!state.addFeeHead[action.payload.index]) {
-        state.addFeeHead[action.payload.index] = {};
-      }
-      // Set the property value
-      state.addFeeHead[action.payload.index][action.payload.name] =
-        action.payload.value;
+
+      state.addFeeHead[index] = {
+        ...state.addFeeHead[index],
+        ...fields,
+      };
     },
     clearFeeHeadDiv: (state) => {
       state.addFeeHead = [
         {
           fee_head_id: "",
           amount: "",
+          remarks: "",
         },
       ];
     },

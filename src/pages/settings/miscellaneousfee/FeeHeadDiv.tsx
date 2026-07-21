@@ -16,114 +16,56 @@ import {
 import Select from "react-select";
 import { customStyles } from "../../../components/inputComponent/SelectStyle";
 function FeeHeadDiv(props: any) {
-  const [showAmountDD, setShowAmountDD]: any = useState(false);
+  const handleInputChange = (e: any) => {
+    props.onChange(props.index, e.target.name, e.target.value);
+  };
 
-  const feeHeadData: any = useSelector(
-    (state: any) => state.miscellaneousSetting
-  );
-  const dispatch: any = useDispatch();
-
-  const handleAddRow = () => {
-    props.add();
-    dispatch(setDefaultFeeHead());
-  };
-  const handleDeleteRow = () => {
-    props.delete(props.index);
-    dispatch(deleteFeeHeadDiv(props.index));
-  };
-  const handleChange = (e: any) => {
-    var data = {
-      name: e.target.name,
-      value: e.target.value,
-      index: props.index,
-    };
-    dispatch(updateFeeHeadDiv(data));
-  };
-  const handleDropDownChange = (value: any) => {
-    var data = {
-      name: "amount",
-      value: value,
-      index: props.index,
-    };
-    dispatch(updateFeeHeadDiv(data));
-  };
-  const feeHeadOptions: any = feeHeadData.miscellaneousSettingList?.map(
-    (items: any) => {
-      return {
-        value: items.fee_amount,
-        label: items.fee_head_name,
-        id: items.id,
-      };
-    }
-  );
   return (
     <>
-      <Col
-        md={6}
-        className="setting-field-col"
-        //
-      >
+      <Col md={6} className="setting-field-col">
         <label>Fee Head {props.index !== 0 ? props.index : ""}</label>
+
         <Select
-          options={feeHeadOptions}
+          options={props.feeHeadOptions}
           placeholder="Select Fee Head"
           styles={customStyles}
+          value={props.feeHeadOptions.find(
+            (opt: any) => opt.id === props.item.fee_head_id,
+          )}
           onChange={(e: any) => {
-            var data1 = {
-              name: "fee_head_id",
-              value: e.id,
-              index: props.index,
-            };
-            var data2 = {
-              name: "amount",
-              value: e.value,
-              index: props.index,
-            };
-            dispatch(updateFeeHeadDiv(data1));
-            dispatch(updateFeeHeadDiv(data2));
+            props.onChange(props.index, "fee_head_id", e.id);
+            props.onChange(props.index, "amount", e.value);
+            props.onChange(props.index, "remarks", e.remarks);
           }}
         />
       </Col>
+
       <Col md={6} className="setting-field-col">
         <label>Fee Amount {props.index !== 0 ? props.index : ""}</label>
+
         <div className="d-flex align-items-center gap-2">
           <input
             className="form-input"
             type="number"
             name="amount"
-            onChange={handleChange}
-            value={feeHeadData.addFeeHead[props.index]?.["amount"]}
+            value={props.item.amount}
+            onChange={handleInputChange}
             required
           />
-          {/* <TextDropDownSelect
-            name={"amount"}
-            type={"number"}
-            className={"form-input"}
-            autoComplete={"off"}
-            required={true}
-            placeHolder={`Enter fee amount ${
-              props.index !== 0 ? props.index : ""
-            }`}
-            handleValueChange={(e: any) => handleChange(e)}
-            value={feeHeadData.addFeeHead[props.index]?.["amount"]}
-            dropDownListValues={feeHeadData.miscellaneousSettingList?.map(
-              (items: any) => items.fee_amount
-            )}
-            handleDropDownChange={(e: any) => handleDropDownChange(e)}
-          />*/}
-          {props.index !== 0 ? (
-            <div className="circle-btn delete" onClick={handleDeleteRow}>
+
+          {props.index !== 0 && (
+            <div
+              className="circle-btn delete"
+              onClick={() => props.delete(props.index)}
+            >
               <FaTimesCircle color="#e78484" />
             </div>
-          ) : (
-            ""
           )}
-          {props.array.length - 1 === props.index ? (
-            <div onClick={handleAddRow} style={{ cursor: "pointer" }}>
+
+          {props.array.length - 1 === props.index && (
+            <div onClick={props.add} style={{ cursor: "pointer" }}>
               <FaPlusCircle color="#0ea377" />
             </div>
-          ) : (
-            ""
           )}
         </div>
       </Col>

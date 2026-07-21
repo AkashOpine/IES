@@ -1,64 +1,35 @@
 import axios from "axios";
-import { useEffect, useMemo, useState, useRef } from "react";
-import { Overlay, Popover, Row } from "react-bootstrap";
-import DataTable, { Alignment } from "react-data-table-component";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
+import { Overlay, Popover } from "react-bootstrap";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-enterprise";
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { useDispatch, useSelector } from "react-redux";
 import { apiPost } from "../../../config/apiConfig";
 import {
-  ACADEMIC_YEAR,
-  ADD_PICKUP_POINT,
-  PICKUP_POINT_BY_ID,
   PICKUP_POINT_DELETE,
   TRANSPORT_DISCONTINUE,
 } from "../../../config/BaseUrl";
 import { tryFetchTransportSettingFeeListData } from "../../../slices/settings/transportSettingSlice";
-import {
-  clearPickupPoint,
-  setDefaultPickupPoint,
-} from "../../../slices/transport/transportSlice";
+import { setDefaultPickupPoint } from "../../../slices/transport/transportSlice";
 import AddTransportFeeModal from "./AddTransportFee";
 import { ToastContainer, toast } from "react-toastify";
 
 function TransportFeeSettings() {
   const dispatch = useDispatch();
   const ref = useRef(null);
+  const gridRef: any = useRef();
   const transportSettingData: any = useSelector(
-    (state: any) => state.transportsetting
+    (state: any) => state.transportsetting,
   );
-  console.log("transportData", transportSettingData);
   const [openModal, setOpenModal]: any = useState(false);
-  const [editModal, setEditModal] = useState(false);
   const [show, setShow] = useState(false);
   const [target, setTarget] = useState(null);
   const [itemId, setItemId] = useState("");
-  const [classOptions, setClassOptions] = useState([]);
-  const [editValues, seteditValues]: any = useState({
-    academic_year: "2022-2023",
-    route_id: "",
-    pick_up_point: "",
-    pick_up_fee: "",
-    description: "",
-  });
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
-  const handleChangeEdit = (e: any) => {
-    const newData = { ...editValues };
-    newData[e.target.name] = e.target.value;
-    seteditValues(newData);
-    console.log("values", editValues);
-  };
-
-  const handleChangeYear = (e: any) => {
-    console.log("E", e);
-    const newData = { ...editValues, academic_year: e.value };
-    seteditValues(newData);
-  };
-  const handleChangeDriver = (e: any) => {
-    console.log("E", e);
-    const newData = { ...editValues, driver_name: e.label, driver_id: e.value };
-    seteditValues(newData);
-  };
   const handleModel = () => {
     setOpenModal(true);
     dispatch(setDefaultPickupPoint());
@@ -71,96 +42,6 @@ function TransportFeeSettings() {
     setFilteredData(transportSettingData?.transportSettingFeeListData);
   }, [transportSettingData?.transportSettingFeeListData]);
 
-  const handleEditModal = (row: any) => {
-    console.log("row", row);
-    setItemId(row.id);
-    setEditModal(true);
-    seteditValues(row);
-  };
-  const getItemById = async (id: any) => {
-    try {
-      var token = localStorage.getItem("token") as string;
-      var bodyFormData = new FormData();
-      console.log("items", id);
-      bodyFormData.append("Authorization", token);
-      bodyFormData.append("maintenance_id", id);
-      let resp: any = await apiPost(PICKUP_POINT_BY_ID, bodyFormData);
-      console.log(" repair data by id is ", resp);
-      if (resp.response.data?.status === 200) {
-        seteditValues(resp.response.data.data);
-      } else {
-        alert("Something happened please try again");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("error message: ", error.message);
-        return error.message;
-      } else {
-        console.log("unexpected error: ", error);
-        return "An unexpected error occurred";
-      }
-    }
-  };
-  async function getAcademicYear() {
-    try {
-      var token = localStorage.getItem("token") as string;
-      var bodyFormData = new FormData();
-      bodyFormData.append("Authorization", token);
-      let resp: any = await apiPost(ACADEMIC_YEAR, bodyFormData);
-      console.log("ACADEMIC YEAR ", resp);
-      if (resp.response.data.status == 200) {
-        setClassOptions(resp.response.data.data);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("error message: ", error.message);
-        return error.message;
-      } else {
-        console.log("unexpected error: ", error);
-        return "An unexpected error occurred";
-      }
-    }
-  }
-  function handleEdit(e: any) {
-    e.preventDefault(e);
-    try {
-      var token = localStorage.getItem("token") as string;
-      var bodyFormData = new FormData();
-      let edit_pickup = "1";
-      bodyFormData.append("Authorization", token);
-      bodyFormData.append("academic_year", editValues.academic_year);
-      bodyFormData.append("pick_up_point", editValues.pick_up_point);
-      bodyFormData.append("pick_up_fee", editValues.pick_up_fee);
-      bodyFormData.append("pick_up_time", editValues.pick_up_time);
-      bodyFormData.append("drop_off_time", editValues.drop_off_time);
-      bodyFormData.append("description", editValues.description);
-      bodyFormData.append("route_id", editValues.route_id);
-      // bodyFormData.append("edit_pickup", edit_pickup);
-      console.log("editVAalues ", editValues);
-
-      let resp: any = apiPost(ADD_PICKUP_POINT, bodyFormData);
-      console.log("fuel datas  is ", resp);
-      if (resp.response.data.status === 200 && resp.response.data.data) {
-        clearDatas();
-      } else {
-        alert("Something happened please try again");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("error message: ", error.message);
-        return error.message;
-      } else {
-        console.log("unexpected error: ", error);
-        return "An unexpected error occurred";
-      }
-    }
-  }
-  const handleDeleteModal = (event: any, id: any) => {
-    console.log("event", event);
-    setShow(!show);
-    setTarget(event.target);
-    setItemId(id);
-  };
   async function handleDelete(id: any) {
     try {
       var token = localStorage.getItem("token") as string;
@@ -172,11 +53,6 @@ function TransportFeeSettings() {
       console.log("DELETE setting datas  is ", resp);
       if (resp.response.data.status === 200 && resp.response.data.data) {
         setShow(false);
-        // var data = {
-        //   year: transportData.academicYear,
-        //   route: transportData.routeId,
-        // };
-        // dispatch(tryFetchPickupPointListData(data));
       } else {
         alert("Something happened please try again");
       }
@@ -190,23 +66,7 @@ function TransportFeeSettings() {
       }
     }
   }
-  const clearDatas = () => {
-    seteditValues({
-      academic_year: "",
-      route_id: "",
-      pick_up_point: "",
-      pick_up_fee: "",
-      description: "",
-    });
 
-    setEditModal(false);
-    dispatch(clearPickupPoint());
-    // var data = {
-    //   year: transportData.academicYear,
-    //   route: transportData.routeId,
-    // };
-    // dispatch(tryFetchPickupPointListData(data));
-  };
   const handleDiscontinueModal = (event: any, id: any) => {
     console.log("discontinue std id is", id);
     setShow(true);
@@ -242,94 +102,90 @@ function TransportFeeSettings() {
       }
     }
   }
-  const columns: any = [
-    //
-    {
-      name: "SL.No",
-      selector: (row: any, index: any) => index + 1,
-      sortable: true,
-    },
-    {
-      name: "Student Name",
-      selector: (row: any) => row.student_name,
-      sortable: true,
-    },
-    {
-      name: "Admission No",
-      selector: (row: any) => row.old_admission_no,
-      sortable: true,
-    },
-    {
-      name: "Class Name",
-      selector: (row: any) => `${row.class_name} - ${row.division_name}`,
-      sortable: true,
-    },
-    // {
-    //   name: "Division",
-    //   selector: (row: any) => row.division_name
-    //   sortable: true,
-    // },
-    // {
-    //   name: "Contact",
-    //   selector: (row: any) => row.fmobile,
-    //   sortable: true,
-    // },
-    {
-      name: "Route",
-      selector: (row: any) => row.route,
-      sortable: true,
-    },
-    {
-      name: "Pickup Point",
-      selector: (row: any) => row.pick_up_point,
-      sortable: true,
-    },
-    {
-      name: "Fee Amount",
-      selector: (row: any) => row.fee_amount,
-      sortable: true,
-    },
-    {
-      name: "Action",
-      button: true,
-      cell: (row: any) => (
-        <div className="d-flex align-items-center gap-2">
-          <div
-            className="button-datatable pad-2"
-            onClick={(e) => handleDiscontinueModal(e, row.student_id)}
-          >
-            {/* <FaTrash size={12} color="#ffffff" /> */}
-            <span>Discontinue</span>
-          </div>
-        </div>
-      ),
-      width: "180px",
-    },
-    // {
-    //   name: "Action",
-    //   button: true,
-    //   cell: (row: any) => (
-    //     <>
-    //       <div className="d-flex align-items-center gap-2">
-    //         <div
-    //           className="round-btn-group edit"
-    //           onClick={() => handleEditModal(row)}
-    //         >
-    //           <FaEdit size={15} color="#fff" />
-    //         </div>
 
-    //         <div
-    //           className="round-btn-group delete"
-    //           onClick={(e) => handleDeleteModal(e, row.id)}
-    //         >
-    //           <FaTrash size={15} color="#fff" />
-    //         </div>
-    //       </div>
-    //     </>
-    //   ),
-    //   width: "300px",
-    // },
+  // Cell renderer for the sticky Action column
+  const ActionCellRenderer = (params: any) => {
+    const row = params.data;
+    return (
+      <div className="d-flex align-items-center gap-2">
+        <div
+          className="button-datatable pad-2"
+          onClick={(e) => handleDiscontinueModal(e, row.student_id)}
+        >
+          <span>Discontinue</span>
+        </div>
+      </div>
+    );
+  };
+
+  const columnDefs: any = [
+    {
+      headerName: "SL.No",
+      valueGetter: (params: any) =>
+        params.node ? params.node.rowIndex + 1 : null,
+      width: 100,
+      sortable: true,
+    },
+    {
+      field: "student_name",
+      headerName: "Student Name",
+      sortable: true,
+    },
+    {
+      field: "old_admission_no",
+      headerName: "Admission No",
+      sortable: true,
+    },
+    {
+      headerName: "Class Name",
+      valueGetter: (params: any) =>
+        `${params.data.class_name} - ${params.data.division_name}`,
+      sortable: true,
+    },
+    {
+      field: "remark",
+      headerName: "Remark",
+      sortable: true,
+    },
+    {
+      field: "route",
+      headerName: "Route",
+      sortable: true,
+    },
+    {
+      field: "pick_up_point",
+      headerName: "Pickup Point",
+      sortable: true,
+    },
+    {
+      field: "fee_amount",
+      headerName: "Fee Amount",
+      sortable: true,
+    },
+    
+    {
+      headerName: "Action",
+      field: "action",
+      pinned: "right" as const,
+      lockPinned: true,
+      width: 180,
+      sortable: false,
+      filter: false,
+      resizable: false,
+      suppressMenu: true,
+      cellRenderer: ActionCellRenderer,
+    },
   ];
+
+  const defaultColDef = useMemo(
+    () => ({
+      filter: true,
+      resizable: true,
+      sortable: true,
+    }),
+    [],
+  );
+
   const handleSearch = (searchValue: string) => {
     setSearchTerm(searchValue);
     console.log("search text", searchValue);
@@ -337,7 +193,9 @@ function TransportFeeSettings() {
       transportSettingData?.transportSettingFeeListData.filter(
         (row: any) =>
           row.student_name.toLowerCase().includes(searchValue.toLowerCase()) ||
-          row.old_admission_no.toLowerCase().includes(searchValue.toLowerCase())
+          row.old_admission_no
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()),
       );
 
     setFilteredData(filteredResults);
@@ -356,47 +214,37 @@ function TransportFeeSettings() {
             onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
-        <button
-          className="btn-view"
-          role="button"
-          onClick={handleModel}
-          // disabled={!transportData?.routeId}
-        >
+        <button className="btn-view" role="button" onClick={handleModel}>
           <span>Add Bus Fee</span>
         </button>
       </div>
     );
   }, [searchTerm]);
+
+  const onGridReady = useCallback(
+    (params: any) => {
+      return filteredData;
+    },
+    [filteredData],
+  );
+
   return (
     <>
       <ToastContainer />
-      <Row>
-        {/* <Col md={12} className="report-header">
-          <Header />
-        </Col> */}
-      </Row>
       <div className="page-inner-content" ref={ref}>
-        <DataTable
-          columns={columns}
-          // data={transportSettingData?.transportSettingFeeListData}
-          data={filteredData}
-          subHeader
-          subHeaderComponent={headerComponent}
-          subHeaderAlign={Alignment.LEFT}
-          pagination
-        />
+        {headerComponent}
+        <div className="ag-theme-alpine grid-table mt-2">
+          <AgGridReact
+            ref={gridRef}
+            rowData={filteredData}
+            columnDefs={columnDefs}
+            animateRows={true}
+            defaultColDef={defaultColDef}
+            pagination
+            onGridReady={onGridReady}
+          />
+        </div>
         <AddTransportFeeModal modalOpen={openModal} setOpen={setOpenModal} />
-        {/* <EditPickupPoint
-          modalOpen={editModal}
-          setOpen={setEditModal}
-          handle={handleChangeEdit}
-          handleChangeYear={handleChangeYear}
-          handleChangeDriver={handleChangeDriver}
-          editValues={editValues}
-          handleEdit={handleEdit}
-          // id={itemId}
-          classOptions={classOptions}
-        /> */}
         <Overlay
           show={show}
           target={target}
