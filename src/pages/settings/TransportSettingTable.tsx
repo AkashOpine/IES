@@ -17,7 +17,6 @@ import {
   tryFetchRouteListData,
 } from "../../slices/transport/transportSlice";
 import DeleteModal from "../../components/delete modal/DeleteModal";
-import DeleteModal from "../../components/delete modal/DeleteModal";
 function TransportSettingTable() {
   const transportSettingData: any = useSelector(
     (state: any) => state.transportsetting,
@@ -196,7 +195,7 @@ function TransportSettingTable() {
           onClose={() => setShow(false)}
           onConfirm={() => handleDelete(itemId)}
         />
-        {/* <Overlay
+       
         {/* <Overlay
           show={show}
           target={target}
@@ -222,7 +221,7 @@ function TransportSettingTable() {
             </Popover.Body>
           </Popover>
         </Overlay> */}
-        </Overlay> */}
+       
 
         <DeleteModal
         show={show}
