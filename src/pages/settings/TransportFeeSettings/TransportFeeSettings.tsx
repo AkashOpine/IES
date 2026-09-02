@@ -69,7 +69,8 @@ function TransportFeeSettings() {
 
   const handleDiscontinueModal = (event: any, id: any) => {
     console.log("discontinue std id is", id);
-    setShow(true);
+    handleDiscontinue(id)
+    // setShow(true);
     setTarget(event.target);
     setItemId(id);
   };
@@ -245,7 +246,7 @@ function TransportFeeSettings() {
           />
         </div>
         <AddTransportFeeModal modalOpen={openModal} setOpen={setOpenModal} />
-        <Overlay
+        {/* <Overlay
           show={show}
           target={target}
           placement="left"
@@ -295,7 +296,7 @@ function TransportFeeSettings() {
               </div>
             </Popover.Body>
           </Popover>
-        </Overlay>
+        </Overlay> */}
       </div>
     </>
   );
