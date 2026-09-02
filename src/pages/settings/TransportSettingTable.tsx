@@ -16,6 +16,7 @@ import {
   tryFetchPickupPointListData,
   tryFetchRouteListData,
 } from "../../slices/transport/transportSlice";
+import DeleteModal from "../../components/delete modal/DeleteModal";
 function TransportSettingTable() {
   const transportSettingData: any = useSelector(
     (state: any) => state.transportsetting,
@@ -45,7 +46,8 @@ function TransportSettingTable() {
     setItemId(id);
   };
   async function handleDelete(id: any) {
-    console.log("delete initiated");
+    console.log("delete initiated", id);
+
     try {
       var token = localStorage.getItem("token") as string;
       var bodyFormData = new FormData();
@@ -74,6 +76,7 @@ function TransportSettingTable() {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("error message: ", error.message);
+        setShow(false);
         return error.message;
       } else {
         console.log("unexpected error: ", error);
@@ -187,7 +190,12 @@ function TransportSettingTable() {
           setOpen={setEditModal}
           datas={editRowData}
         />
-        <Overlay
+        <DeleteModal
+          show={show}
+          onClose={() => setShow(false)}
+          onConfirm={() => handleDelete(itemId)}
+        />
+        {/* <Overlay
           show={show}
           target={target}
           placement="left"
@@ -211,7 +219,7 @@ function TransportSettingTable() {
               </div>
             </Popover.Body>
           </Popover>
-        </Overlay>
+        </Overlay> */}
       </div>
     </>
   );
