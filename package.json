@@ -75,6 +75,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.190",
-    "@types/styled-components": "^5.1.36"
+    "@types/styled-components": "^5.1.36",
+    "cross-env": "^10.1.0"
   }
 }

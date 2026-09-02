@@ -44,6 +44,7 @@ function HostelSettings() {
   );
 
   const handleDiscontinueModal = (event: any, id: any) => {
+     handleDiscontinue(id)
     console.log("discontinue std id is", id);
     setShow(true);
     setTarget(event.target);
